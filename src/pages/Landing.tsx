@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import { useEffect } from 'react'
 import { 
   PenLine, 
   BookOpen, 
@@ -10,8 +11,15 @@ import {
 } from 'lucide-react'
 
 export default function Landing() {
-  const { user } = useAuth()
+  const { user, isLoading } = useAuth()
 
+  // Debug: Log auth state
+  useEffect(() => {
+    console.log('Landing page - Auth state:', { user: !!user, isLoading })
+  }, [user, isLoading])
+
+  // Don't block rendering if auth is loading - show page anyway
+  // The auth state will update when ready
   return (
     <div className="min-h-screen bg-cream-100">
       {/* Navigation */}

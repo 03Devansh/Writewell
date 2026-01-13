@@ -1,6 +1,8 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import { useQuery } from 'convex/react'
+import { api } from '../../convex/_generated/api'
 import { PenLine, Eye, EyeOff } from 'lucide-react'
 
 export default function Auth() {
@@ -11,8 +13,15 @@ export default function Auth() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const navigate = useNavigate()
 
-  const { signIn, signUp } = useAuth()
+  const { signIn, signUp, token } = useAuth()
+  
+  // Check subscription status after signin (not signup)
+  const subscriptionStatus = useQuery(
+    api.auth.getSubscriptionStatus,
+    token ? { token } : 'skip'
+  )
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -25,15 +34,31 @@ export default function Auth() {
           throw new Error('Please enter your name')
         }
         await signUp(email, password, name)
+        // New users always go to trial page
+        navigate('/trial', { replace: true })
       } else {
         await signIn(email, password)
+        // Redirect will be handled by useEffect based on subscription status
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
-    } finally {
       setIsLoading(false)
     }
   }
+
+  // Redirect after successful signin based on subscription
+  useEffect(() => {
+    // Only redirect after signin when we have subscription status
+    // Skip this for signup since we handle that in handleSubmit
+    // Backend always returns an object, never null
+    if (token && subscriptionStatus !== undefined && !isLoading) {
+      if (subscriptionStatus.hasActiveSubscription) {
+        navigate('/dashboard', { replace: true })
+      } else {
+        navigate('/trial', { replace: true })
+      }
+    }
+  }, [token, subscriptionStatus, navigate, isLoading])
 
   return (
     <div className="min-h-screen bg-cream-100 flex flex-col">

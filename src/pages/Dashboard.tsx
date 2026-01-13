@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation } from 'convex/react'
 import { api } from '../../convex/_generated/api'
@@ -128,6 +128,23 @@ export default function Dashboard() {
   const navigate = useNavigate()
   const [isCreating, setIsCreating] = useState(false)
 
+  // Check subscription status - ONLY on Dashboard route
+  const subscriptionStatus = useQuery(
+    api.auth.getSubscriptionStatus,
+    token ? { token } : 'skip'
+  )
+
+  // Redirect unpaid users to trial (not stuck on loader)
+  useEffect(() => {
+    // Handle three states: undefined (loading), or object (resolved - always returns object, never null)
+    if (subscriptionStatus !== undefined) {
+      // Status is resolved, check if user has active subscription
+      if (!subscriptionStatus.hasActiveSubscription) {
+        navigate('/trial', { replace: true })
+      }
+    }
+  }, [subscriptionStatus, navigate])
+
   const documents = useQuery(
     api.documents.list,
     token ? { token } : 'skip'
@@ -157,6 +174,19 @@ export default function Dashboard() {
     } catch (error) {
       console.error('Failed to delete document:', error)
     }
+  }
+
+  // Show loading state while subscription status is being checked
+  // This is the ONLY place subscription loading is shown
+  if (subscriptionStatus === undefined) {
+    return (
+      <div className="min-h-screen bg-cream-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-ink-900 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-charcoal-600 font-body">Loading...</p>
+        </div>
+      </div>
+    )
   }
 
   return (

@@ -7,6 +7,10 @@ export default defineSchema({
     name: v.string(),
     passwordHash: v.string(),
     createdAt: v.number(),
+    hasActiveSubscription: v.optional(v.boolean()),
+    subscriptionId: v.optional(v.string()),
+    subscriptionStatus: v.optional(v.string()),
+    subscriptionUpdatedAt: v.optional(v.number()),
   }).index("by_email", ["email"]),
 
   documents: defineTable({

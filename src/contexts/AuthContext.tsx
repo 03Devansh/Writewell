@@ -8,6 +8,9 @@ interface User {
   email: string;
   name: string;
   createdAt: number;
+  hasActiveSubscription: boolean;
+  subscriptionId?: string;
+  subscriptionStatus?: string;
 }
 
 interface AuthContextType {
@@ -28,6 +31,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return localStorage.getItem(TOKEN_KEY);
   });
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const signInMutation = useMutation(api.auth.signIn);
   const signUpMutation = useMutation(api.auth.signUp);
   const signOutMutation = useMutation(api.auth.signOut);
@@ -37,58 +42,48 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     token ? { token } : 'skip'
   );
 
-  // Determine loading state:
-  // - If no token, not loading (user is just not logged in)
-  // - If token exists, loading until query returns (user !== undefined)
-  const isLoading = token ? user === undefined : false;
-
-  // Clear invalid token
+  // 🔑 This effect FINALIZES auth loading
   useEffect(() => {
-    if (token && user === null) {
-      // Token is invalid, clear it
-      localStorage.removeItem(TOKEN_KEY);
-      setToken(null);
+    // No token → auth resolved
+    if (!token) {
+      setIsLoading(false);
+      return;
+    }
+
+    // Query resolved (either user or null)
+    if (user !== undefined) {
+      if (user === null) {
+        // Invalid token
+        localStorage.removeItem(TOKEN_KEY);
+        setToken(null);
+      }
+      setIsLoading(false);
     }
   }, [user, token]);
 
   const signIn = async (email: string, password: string) => {
-    try {
-      const result = await signInMutation({ email, password });
-      localStorage.setItem(TOKEN_KEY, result.token);
-      setToken(result.token);
-    } catch (error: unknown) {
-      // Re-throw with a proper Error object for the UI to catch
-      if (error instanceof Error) {
-        throw error;
-      }
-      throw new Error(String(error));
-    }
+    const result = await signInMutation({ email, password });
+    localStorage.setItem(TOKEN_KEY, result.token);
+    setToken(result.token);
+    setIsLoading(true); // restart auth resolution
   };
 
   const signUp = async (email: string, password: string, name: string) => {
-    try {
-      const result = await signUpMutation({ email, password, name });
-      localStorage.setItem(TOKEN_KEY, result.token);
-      setToken(result.token);
-    } catch (error: unknown) {
-      // Re-throw with a proper Error object for the UI to catch
-      if (error instanceof Error) {
-        throw error;
-      }
-      throw new Error(String(error));
-    }
+    const result = await signUpMutation({ email, password, name });
+    localStorage.setItem(TOKEN_KEY, result.token);
+    setToken(result.token);
+    setIsLoading(true); // restart auth resolution
   };
 
   const signOut = async () => {
     if (token) {
       try {
         await signOutMutation({ token });
-      } catch (error) {
-        console.error('Error signing out:', error);
-      }
+      } catch {}
     }
     localStorage.removeItem(TOKEN_KEY);
     setToken(null);
+    setIsLoading(false);
   };
 
   return (
