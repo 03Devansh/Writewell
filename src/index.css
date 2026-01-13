@@ -7,9 +7,9 @@
 @layer base {
   html {
     @apply antialiased;
-  }
-  
-  body {
+}
+
+body {
     @apply bg-cream-100 text-charcoal-900 font-body;
   }
   
@@ -27,8 +27,8 @@
     @apply px-6 py-3 bg-ink-900 text-cream-100 font-ui font-medium rounded-lg 
            shadow-soft hover:bg-ink-800 hover:shadow-soft-md 
            transition-all duration-200 ease-out;
-  }
-  
+}
+
   .btn-secondary {
     @apply px-6 py-3 bg-cream-200 text-ink-900 font-ui font-medium rounded-lg 
            border border-charcoal-200 shadow-soft hover:bg-cream-300 
@@ -54,7 +54,7 @@
   
   .sidebar {
     @apply bg-cream-50 border-charcoal-200;
-  }
+}
 }
 
 /* TipTap Editor Styles */
@@ -126,11 +126,11 @@
 
 ::-webkit-scrollbar-thumb {
   @apply bg-charcoal-300 rounded-full;
-}
+  }
 
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-charcoal-400;
-}
+  }
 
 /* Loading animation */
 @keyframes pulse-subtle {

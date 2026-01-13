@@ -27,7 +27,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(() => {
     return localStorage.getItem(TOKEN_KEY);
   });
-  const [isLoading, setIsLoading] = useState(true);
 
   const signInMutation = useMutation(api.auth.signIn);
   const signUpMutation = useMutation(api.auth.signUp);
@@ -38,14 +37,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     token ? { token } : 'skip'
   );
 
+  // Determine loading state:
+  // - If no token, not loading (user is just not logged in)
+  // - If token exists, loading until query returns (user !== undefined)
+  const isLoading = token ? user === undefined : false;
+
+  // Clear invalid token
   useEffect(() => {
-    if (user !== undefined) {
-      setIsLoading(false);
-      if (user === null && token) {
-        // Token is invalid, clear it
-        localStorage.removeItem(TOKEN_KEY);
-        setToken(null);
-      }
+    if (token && user === null) {
+      // Token is invalid, clear it
+      localStorage.removeItem(TOKEN_KEY);
+      setToken(null);
     }
   }, [user, token]);
 
@@ -54,8 +56,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const result = await signInMutation({ email, password });
       localStorage.setItem(TOKEN_KEY, result.token);
       setToken(result.token);
-    } catch (error) {
-      throw error;
+    } catch (error: unknown) {
+      // Re-throw with a proper Error object for the UI to catch
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error(String(error));
     }
   };
 
@@ -64,8 +70,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const result = await signUpMutation({ email, password, name });
       localStorage.setItem(TOKEN_KEY, result.token);
       setToken(result.token);
-    } catch (error) {
-      throw error;
+    } catch (error: unknown) {
+      // Re-throw with a proper Error object for the UI to catch
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error(String(error));
     }
   };
 

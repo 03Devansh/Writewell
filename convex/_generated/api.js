@@ -1,34 +1,23 @@
 /* eslint-disable */
 /**
- * Generated API (stub for development)
- * These will be replaced when running `npx convex dev`
+ * Generated `api` utility.
+ *
+ * THIS CODE IS AUTOMATICALLY GENERATED.
+ *
+ * To regenerate, run `npx convex dev`.
+ * @module
  */
 
-import { makeFunctionReference } from "convex/server";
+import { anyApi, componentsGeneric } from "convex/server";
 
-export const api = {
-  auth: {
-    signIn: makeFunctionReference("auth:signIn"),
-    signUp: makeFunctionReference("auth:signUp"),
-    signOut: makeFunctionReference("auth:signOut"),
-    validateSession: makeFunctionReference("auth:validateSession"),
-    getCurrentUser: makeFunctionReference("auth:getCurrentUser"),
-  },
-  documents: {
-    create: makeFunctionReference("documents:create"),
-    list: makeFunctionReference("documents:list"),
-    get: makeFunctionReference("documents:get"),
-    update: makeFunctionReference("documents:update"),
-    remove: makeFunctionReference("documents:remove"),
-  },
-  knowledge: {
-    add: makeFunctionReference("knowledge:add"),
-    list: makeFunctionReference("knowledge:list"),
-    remove: makeFunctionReference("knowledge:remove"),
-    update: makeFunctionReference("knowledge:update"),
-  },
-  ai: {
-    chat: makeFunctionReference("ai:chat"),
-    generateText: makeFunctionReference("ai:generateText"),
-  },
-};
+/**
+ * A utility for referencing Convex functions in your app's API.
+ *
+ * Usage:
+ * ```js
+ * const myFunctionReference = api.myModule.myFunction;
+ * ```
+ */
+export const api = anyApi;
+export const internal = anyApi;
+export const components = componentsGeneric();

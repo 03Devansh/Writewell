@@ -65,15 +65,15 @@ if (!convexUrl) {
 } else {
   const convex = new ConvexReactClient(convexUrl)
 
-  createRoot(document.getElementById('root')!).render(
-    <StrictMode>
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
       <ConvexProvider client={convex}>
         <AuthProvider>
           <BrowserRouter>
-            <App />
+    <App />
           </BrowserRouter>
         </AuthProvider>
       </ConvexProvider>
-    </StrictMode>,
-  )
+  </StrictMode>,
+)
 }

@@ -1,38 +1,53 @@
 /* eslint-disable */
 /**
- * Generated API types (stub for development)
- * These will be replaced when running `npx convex dev`
+ * Generated `api` utility.
+ *
+ * THIS CODE IS AUTOMATICALLY GENERATED.
+ *
+ * To regenerate, run `npx convex dev`.
+ * @module
  */
 
-import type { Id } from "./dataModel";
+import type * as auth from "../auth.js";
+import type * as documents from "../documents.js";
+import type * as knowledge from "../knowledge.js";
 
-type FunctionReference<T extends "query" | "mutation" | "action", _Args, _Returns> = {
-  _type: T;
-};
+import type {
+  ApiFromModules,
+  FilterApi,
+  FunctionReference,
+} from "convex/server";
 
-export declare const api: {
-  auth: {
-    signIn: FunctionReference<"mutation", { email: string; password: string }, { userId: Id<"users">; token: string }>;
-    signUp: FunctionReference<"mutation", { email: string; password: string; name: string }, { userId: Id<"users">; token: string }>;
-    signOut: FunctionReference<"mutation", { token: string }, { success: boolean }>;
-    validateSession: FunctionReference<"query", { token: string }, { userId: Id<"users">; email: string; name: string } | null>;
-    getCurrentUser: FunctionReference<"query", { token: string }, { _id: Id<"users">; email: string; name: string; createdAt: number } | null>;
-  };
-  documents: {
-    create: FunctionReference<"mutation", { token: string; title?: string }, Id<"documents">>;
-    list: FunctionReference<"query", { token: string }, Array<{ _id: Id<"documents">; userId: Id<"users">; title: string; content: string; createdAt: number; updatedAt: number }>>;
-    get: FunctionReference<"query", { token: string; documentId: Id<"documents"> }, { _id: Id<"documents">; userId: Id<"users">; title: string; content: string; createdAt: number; updatedAt: number } | null>;
-    update: FunctionReference<"mutation", { token: string; documentId: Id<"documents">; title?: string; content?: string }, { success: boolean }>;
-    remove: FunctionReference<"mutation", { token: string; documentId: Id<"documents"> }, { success: boolean }>;
-  };
-  knowledge: {
-    add: FunctionReference<"mutation", { token: string; documentId: Id<"documents">; title: string; content: string }, Id<"knowledge">>;
-    list: FunctionReference<"query", { token: string; documentId: Id<"documents"> }, Array<{ _id: Id<"knowledge">; documentId: Id<"documents">; title: string; content: string; createdAt: number }>>;
-    remove: FunctionReference<"mutation", { token: string; knowledgeId: Id<"knowledge"> }, { success: boolean }>;
-    update: FunctionReference<"mutation", { token: string; knowledgeId: Id<"knowledge">; title?: string; content?: string }, { success: boolean }>;
-  };
-  ai: {
-    chat: FunctionReference<"action", { message: string; documentContent: string; knowledgeContext: Array<{ title: string; content: string }>; chatHistory: Array<{ role: "user" | "assistant"; content: string }> }, { content: string; success: boolean }>;
-    generateText: FunctionReference<"action", { prompt: string; documentContent: string; knowledgeContext: Array<{ title: string; content: string }>; insertionPoint?: string }, { content: string; success: boolean; error?: string }>;
-  };
-};
+declare const fullApi: ApiFromModules<{
+  auth: typeof auth;
+  documents: typeof documents;
+  knowledge: typeof knowledge;
+}>;
+
+/**
+ * A utility for referencing Convex functions in your app's public API.
+ *
+ * Usage:
+ * ```js
+ * const myFunctionReference = api.myModule.myFunction;
+ * ```
+ */
+export declare const api: FilterApi<
+  typeof fullApi,
+  FunctionReference<any, "public">
+>;
+
+/**
+ * A utility for referencing Convex functions in your app's internal API.
+ *
+ * Usage:
+ * ```js
+ * const myFunctionReference = internal.myModule.myFunction;
+ * ```
+ */
+export declare const internal: FilterApi<
+  typeof fullApi,
+  FunctionReference<any, "internal">
+>;
+
+export declare const components: {};
