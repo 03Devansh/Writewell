@@ -4,6 +4,7 @@ import Landing from './pages/Landing'
 import Auth from './pages/Auth'
 import Dashboard from './pages/Dashboard'
 import Editor from './pages/Editor'
+import Profile from './pages/Profile'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, isLoading, token } = useAuth()
@@ -72,6 +73,14 @@ function App() {
         element={
           <ProtectedRoute>
             <Editor />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <Profile />
           </ProtectedRoute>
         }
       />

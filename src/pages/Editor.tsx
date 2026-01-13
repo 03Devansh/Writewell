@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import { useQuery, useMutation } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import { useAuth } from '../contexts/AuthContext'
+import AccountDropdown from '../components/AccountDropdown'
 import RichEditor from '../components/editor/RichEditor'
 import KnowledgePanel from '../components/editor/KnowledgePanel'
 import AIChat from '../components/editor/AIChat'
@@ -257,6 +258,11 @@ export default function Editor() {
               >
                 <Sparkles className="w-4 h-4" />
               </button>
+            </div>
+
+            {/* Account dropdown */}
+            <div className="border-l border-cream-300 pl-4">
+              <AccountDropdown />
             </div>
           </div>
         </div>

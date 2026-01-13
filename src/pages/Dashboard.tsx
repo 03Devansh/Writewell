@@ -3,12 +3,12 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import { useAuth } from '../contexts/AuthContext'
+import AccountDropdown from '../components/AccountDropdown'
 import { 
   PenLine, 
   Plus, 
   FileText, 
   Clock, 
-  LogOut, 
   Trash2,
   MoreVertical
 } from 'lucide-react'
@@ -124,7 +124,7 @@ function DocumentCard({
 }
 
 export default function Dashboard() {
-  const { user, token, signOut } = useAuth()
+  const { token } = useAuth()
   const navigate = useNavigate()
   const [isCreating, setIsCreating] = useState(false)
 
@@ -168,18 +168,7 @@ export default function Dashboard() {
             <PenLine className="w-6 h-6 text-ink-900" />
             <span className="font-display text-xl font-semibold text-ink-900">Inkwell</span>
           </Link>
-          <div className="flex items-center gap-4">
-            <span className="font-ui text-sm text-charcoal-600">
-              {user?.name}
-            </span>
-            <button
-              onClick={signOut}
-              className="btn-ghost flex items-center gap-2 text-charcoal-600 hover:text-charcoal-900"
-            >
-              <LogOut className="w-4 h-4" />
-              <span className="hidden sm:inline">Sign out</span>
-            </button>
-          </div>
+          <AccountDropdown />
         </div>
       </header>
 
