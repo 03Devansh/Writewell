@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 import { PenLine, Check, Sparkles } from 'lucide-react'
 
 const CHECKOUT_LINK =
@@ -7,6 +8,8 @@ const CHECKOUT_LINK =
 
 export default function Trial() {
   const [isLoading, setIsLoading] = useState(false)
+  const { signOut } = useAuth()
+  const navigate = useNavigate()
 
   const handleStartTrial = () => {
     try {
@@ -16,6 +19,11 @@ export default function Trial() {
     } catch {
       setIsLoading(false)
     }
+  }
+
+  const handleLogout = async () => {
+    await signOut()
+    navigate('/auth')
   }
 
   const benefits = [
@@ -103,6 +111,16 @@ export default function Trial() {
             <p className="text-center mt-6 text-sm font-body text-charcoal-500">
               Secure payment powered by Polar
             </p>
+
+            {/* Logout link */}
+            <div className="text-center mt-6 pt-6 border-t border-cream-300">
+              <button
+                onClick={handleLogout}
+                className="text-sm font-body text-charcoal-500 hover:text-charcoal-700 transition-colors underline"
+              >
+                Logged in with a wrong account? → Log out
+              </button>
+            </div>
           </div>
         </div>
       </main>
