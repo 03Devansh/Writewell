@@ -11,6 +11,7 @@ export default defineSchema({
     subscriptionId: v.optional(v.string()),
     subscriptionStatus: v.optional(v.string()),
     subscriptionUpdatedAt: v.optional(v.number()),
+    aiGlobalInstructions: v.optional(v.string()),
   }).index("by_email", ["email"]),
 
   documents: defineTable({
@@ -19,6 +20,7 @@ export default defineSchema({
     content: v.string(),
     createdAt: v.number(),
     updatedAt: v.number(),
+    aiInstructions: v.optional(v.string()),
   }).index("by_user", ["userId"]),
 
   knowledge: defineTable({

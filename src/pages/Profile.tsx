@@ -13,14 +13,19 @@ export default function Profile() {
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const [aiGlobalInstructions, setAiGlobalInstructions] = useState('')
+  const [isSavingInstructions, setIsSavingInstructions] = useState(false)
+  const [instructionsSuccess, setInstructionsSuccess] = useState(false)
 
   const updateProfile = useMutation(api.auth.updateProfile)
+  const updateGlobalInstructions = useMutation(api.auth.updateGlobalInstructions)
 
   // Initialize form with user data
   useEffect(() => {
     if (user) {
       setName(user.name)
       setEmail(user.email)
+      setAiGlobalInstructions(user.aiGlobalInstructions || '')
     }
   }, [user])
 
@@ -45,6 +50,26 @@ export default function Profile() {
       setError(err instanceof Error ? err.message : 'Failed to update profile')
     } finally {
       setIsSaving(false)
+    }
+  }
+
+  const handleSaveInstructions = async () => {
+    if (!token) return
+
+    setInstructionsSuccess(false)
+    setIsSavingInstructions(true)
+
+    try {
+      await updateGlobalInstructions({
+        token,
+        aiGlobalInstructions: aiGlobalInstructions.trim() || undefined,
+      })
+      setInstructionsSuccess(true)
+      setTimeout(() => setInstructionsSuccess(false), 3000)
+    } catch (err) {
+      console.error('Failed to save instructions:', err)
+    } finally {
+      setIsSavingInstructions(false)
     }
   }
 
@@ -126,6 +151,52 @@ export default function Profile() {
                 placeholder="your.email@example.com"
                 required
               />
+            </div>
+
+            {/* AI Writing Instructions section */}
+            <div className="pt-6 border-t border-cream-300">
+              <label
+                htmlFor="aiGlobalInstructions"
+                className="block font-ui text-sm font-medium text-charcoal-700 mb-2"
+              >
+                AI Writing Instructions
+              </label>
+              <p className="text-xs text-charcoal-500 font-ui mb-3">
+                Tell the AI how you want it to write across all documents.
+              </p>
+              <textarea
+                id="aiGlobalInstructions"
+                value={aiGlobalInstructions}
+                onChange={(e) => setAiGlobalInstructions(e.target.value)}
+                rows={4}
+                className="input-field resize-none"
+                placeholder="Write in an academic, formal tone. Be concise and structured."
+              />
+              <div className="flex items-center gap-3 mt-3">
+                <button
+                  type="button"
+                  onClick={handleSaveInstructions}
+                  disabled={isSavingInstructions}
+                  className="btn-primary flex items-center gap-2 disabled:opacity-50"
+                >
+                  {isSavingInstructions ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-cream-100 border-t-transparent rounded-full animate-spin" />
+                      <span>Saving...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4" />
+                      <span>Save Instructions</span>
+                    </>
+                  )}
+                </button>
+                {instructionsSuccess && (
+                  <span className="text-sm font-ui text-green-600">
+                    Instructions saved!
+                  </span>
+                )}
+              </div>
             </div>
 
             {/* Error message */}

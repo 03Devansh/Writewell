@@ -161,3 +161,38 @@ export const remove = mutation({
     return { success: true };
   },
 });
+
+export const updateInstructions = mutation({
+  args: {
+    token: v.string(),
+    documentId: v.id("documents"),
+    aiInstructions: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    // Validate session
+    const session = await ctx.db
+      .query("sessions")
+      .withIndex("by_token", (q) => q.eq("token", args.token))
+      .first();
+
+    if (!session || session.expiresAt < Date.now()) {
+      throw new Error("Unauthorized");
+    }
+
+    const document = await ctx.db.get(args.documentId);
+    
+    if (!document || document.userId !== session.userId) {
+      throw new Error("Document not found");
+    }
+
+    const updates: { aiInstructions?: string } = {};
+    if (args.aiInstructions !== undefined) {
+      updates.aiInstructions = args.aiInstructions || undefined;
+    }
+
+    // Important: Do NOT update updatedAt field (instructions are separate from content)
+    await ctx.db.patch(args.documentId, updates);
+
+    return { success: true };
+  },
+});

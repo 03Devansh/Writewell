@@ -149,6 +149,7 @@ export const getCurrentUser = query({
       hasActiveSubscription: user.hasActiveSubscription ?? false,
       subscriptionId: user.subscriptionId,
       subscriptionStatus: user.subscriptionStatus,
+      aiGlobalInstructions: user.aiGlobalInstructions,
     };
   },
 });
@@ -252,6 +253,35 @@ export const updateProfile = mutation({
     const updates: { name?: string; email?: string } = {};
     if (args.name !== undefined) updates.name = args.name;
     if (args.email !== undefined) updates.email = args.email;
+
+    await ctx.db.patch(user._id, updates);
+
+    return { success: true };
+  },
+});
+
+export const updateGlobalInstructions = mutation({
+  args: {
+    token: v.string(),
+    aiGlobalInstructions: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const session = await ctx.db
+      .query("sessions")
+      .withIndex("by_token", (q) => q.eq("token", args.token))
+      .first();
+
+    if (!session || session.expiresAt < Date.now()) {
+      throw new Error("Invalid or expired session");
+    }
+
+    const user = await ctx.db.get(session.userId);
+    if (!user) throw new Error("User not found");
+
+    const updates: { aiGlobalInstructions?: string } = {};
+    if (args.aiGlobalInstructions !== undefined) {
+      updates.aiGlobalInstructions = args.aiGlobalInstructions || undefined;
+    }
 
     await ctx.db.patch(user._id, updates);
 

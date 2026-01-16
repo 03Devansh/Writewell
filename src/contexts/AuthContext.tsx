@@ -11,6 +11,7 @@ interface User {
   hasActiveSubscription: boolean;
   subscriptionId?: string;
   subscriptionStatus?: string;
+  aiGlobalInstructions?: string;
 }
 
 interface AuthContextType {

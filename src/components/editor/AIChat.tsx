@@ -9,13 +9,17 @@ import {
   Check, 
   Plus,
   User,
-  Bot
+  Bot,
+  X
 } from 'lucide-react'
 
 interface AIChatProps {
   documentId: Id<"documents">
   documentContent: string
   token: string
+  contextItems?: ContextItem[]
+  onContextItemsChange?: (items: ContextItem[]) => void
+  aiInstructions?: string
 }
 
 interface Message {
@@ -24,13 +28,33 @@ interface Message {
   content: string
 }
 
-export default function AIChat({ documentId, documentContent, token }: AIChatProps) {
+interface ContextItem {
+  id: string
+  text: string
+}
+
+export default function AIChat({ documentId, documentContent, token, contextItems = [], onContextItemsChange, aiInstructions }: AIChatProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
+
+  const removeContext = (id: string) => {
+    if (onContextItemsChange) {
+      onContextItemsChange(contextItems.filter(item => item.id !== id))
+    }
+  }
+
+  const getTruncatedText = (text: string): string => {
+    const words = text.split(/\s+/)
+    if (words.length <= 2) {
+      return text.length > 30 ? text.substring(0, 30) + '...' : text
+    }
+    const firstTwo = words.slice(0, 2).join(' ')
+    return firstTwo.length > 30 ? firstTwo.substring(0, 30) + '...' : firstTwo + '...'
+  }
 
   const knowledge = useQuery(
     api.knowledge.list,
@@ -71,28 +95,73 @@ export default function AIChat({ documentId, documentContent, token }: AIChatPro
         content: m.content,
       }))
 
-      const response = await chat({
+      const selectedContext = contextItems.map(item => item.text)
+
+      const chatParams: {
+        message: string
+        documentContent: string
+        knowledgeContext: Array<{ title: string; content: string }>
+        chatHistory: Array<{ role: 'user' | 'assistant'; content: string }>
+        selectedContext?: string[]
+        aiInstructions?: string
+      } = {
         message: userMessage.content,
         documentContent,
         knowledgeContext,
         chatHistory,
-      })
-
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: response.content,
       }
 
-      setMessages(prev => [...prev, assistantMessage])
+      // Only include selectedContext if there are items
+      if (selectedContext.length > 0) {
+        chatParams.selectedContext = selectedContext
+      }
+
+      // Only include aiInstructions if provided
+      if (aiInstructions && aiInstructions.trim().length > 0) {
+        chatParams.aiInstructions = aiInstructions.trim()
+      }
+
+      const response = await chat(chatParams)
+
+      // Handle response - check success field if available
+      if (response && typeof response === 'object' && 'success' in response && !response.success) {
+        // The action returned an error message in content
+        const errorMsg: Message = {
+          id: (Date.now() + 1).toString(),
+          role: 'assistant',
+          content: response.content || 'Sorry, I encountered an error.',
+        }
+        setMessages(prev => [...prev, errorMsg])
+      } else {
+        const assistantMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: 'assistant',
+          content: response?.content || 'I couldn\'t generate a response.',
+        }
+        setMessages(prev => [...prev, assistantMessage])
+      }
     } catch (error) {
       console.error('AI chat error:', error)
-      const errorMessage: Message = {
+      let errorMessage = 'Sorry, I encountered an error.'
+      
+      // Provide more specific error messages
+      if (error instanceof Error) {
+        console.error('Error details:', error.message, error.stack)
+        if (error.message.includes('API key') || error.message.includes('authentication')) {
+          errorMessage = 'Please make sure your OpenAI API key is configured correctly.'
+        } else if (error.message.includes('validation') || error.message.includes('Invalid')) {
+          errorMessage = 'There was a validation error. Please try again.'
+        } else {
+          errorMessage = `Error: ${error.message}`
+        }
+      }
+      
+      const errorMsg: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: 'Sorry, I encountered an error. Please make sure your OpenAI API key is configured correctly.',
+        content: errorMessage,
       }
-      setMessages(prev => [...prev, errorMessage])
+      setMessages(prev => [...prev, errorMsg])
     } finally {
       setIsLoading(false)
     }
@@ -259,6 +328,29 @@ export default function AIChat({ documentId, documentContent, token }: AIChatPro
 
       {/* Input */}
       <div className="p-3 border-t border-cream-300">
+        {/* Context cards */}
+        {contextItems.length > 0 && (
+          <div className="mb-2 flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-charcoal-200 scrollbar-track-transparent">
+            {contextItems.map((item) => (
+              <div
+                key={item.id}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white border border-cream-300 rounded-lg flex-shrink-0 group"
+              >
+                <span className="text-xs text-charcoal-700 font-ui max-w-[120px] truncate">
+                  {getTruncatedText(item.text)}
+                </span>
+                <button
+                  onClick={() => removeContext(item.id)}
+                  className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 text-charcoal-400 hover:text-charcoal-600 hover:bg-cream-100 rounded"
+                  title="Remove context"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+        
         <div className="flex items-end gap-2">
           <textarea
             ref={inputRef}

@@ -36,7 +36,7 @@ function formatLastSaved(timestamp: number): string {
 
 export default function Editor() {
   const { id } = useParams<{ id: string }>()
-  const { token } = useAuth()
+  const { token, user } = useAuth()
   
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
@@ -295,6 +295,7 @@ export default function Editor() {
               documentId={documentId}
               documentContent={content}
               token={token}
+              aiInstructions={document?.aiInstructions ?? user?.aiGlobalInstructions ?? undefined}
             />
           </div>
         )}

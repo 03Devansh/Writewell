@@ -2,7 +2,7 @@ import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
 import Underline from '@tiptap/extension-underline'
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useState, useRef } from 'react'
 import {
   Bold,
   Italic,
@@ -16,12 +16,14 @@ import {
   Heading3,
   Undo,
   Redo,
+  Plus,
 } from 'lucide-react'
 
 interface RichEditorProps {
   content: string
   onChange: (content: string) => void
   placeholder?: string
+  onAddContext?: (text: string) => void
 }
 
 interface ToolbarButtonProps {
@@ -55,7 +57,13 @@ function ToolbarDivider() {
   return <div className="w-px h-6 bg-charcoal-200 mx-1" />
 }
 
-export default function RichEditor({ content, onChange, placeholder }: RichEditorProps) {
+export default function RichEditor({ content, onChange, placeholder, onAddContext }: RichEditorProps) {
+  const [showAddButton, setShowAddButton] = useState(false)
+  const [buttonPosition, setButtonPosition] = useState({ top: 0, left: 0 })
+  const [selectedText, setSelectedText] = useState('')
+  const editorRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -76,6 +84,45 @@ export default function RichEditor({ content, onChange, placeholder }: RichEdito
     },
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML())
+    },
+    onSelectionUpdate: ({ editor }) => {
+      const { from, to } = editor.state.selection
+      const isEmpty = from === to
+      
+      if (isEmpty) {
+        setShowAddButton(false)
+        return
+      }
+
+      // Get selected text (plain text, no HTML)
+      const text = editor.state.doc.textBetween(from, to, ' ')
+      if (text.trim().length === 0) {
+        setShowAddButton(false)
+        return
+      }
+
+      setSelectedText(text.trim())
+      
+      // Get selection coordinates
+      try {
+        const { $from } = editor.state.selection
+        const coords = editor.view.coordsAtPos($from.pos)
+        
+        if (editorRef.current) {
+          const editorRect = editorRef.current.getBoundingClientRect()
+          const scrollTop = editorRef.current.scrollTop
+          
+          // Position button near the selection, offset to the right
+          setButtonPosition({
+            top: coords.top - editorRect.top + scrollTop + 5,
+            left: coords.right - editorRect.left + 10,
+          })
+          setShowAddButton(true)
+        }
+      } catch (error) {
+        // If we can't get coordinates, hide the button
+        setShowAddButton(false)
+      }
     },
   })
 
@@ -101,6 +148,38 @@ export default function RichEditor({ content, onChange, placeholder }: RichEdito
       delete (window as unknown as { insertTextToEditor?: (text: string) => void }).insertTextToEditor
     }
   }, [editor, insertText])
+
+  // Handle click outside to hide button
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (buttonRef.current && !buttonRef.current.contains(event.target as Node)) {
+        // Don't hide if clicking on the button itself
+        if (event.target !== buttonRef.current) {
+          // Check if click is in the editor area
+          if (editorRef.current && !editorRef.current.contains(event.target as Node)) {
+            setShowAddButton(false)
+          }
+        }
+      }
+    }
+
+    if (showAddButton) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showAddButton])
+
+  const handleAddContext = () => {
+    if (selectedText && onAddContext) {
+      onAddContext(selectedText)
+      // Clear selection and hide button
+      if (editor) {
+        editor.commands.blur()
+      }
+      setShowAddButton(false)
+      setSelectedText('')
+    }
+  }
 
   if (!editor) {
     return (
@@ -215,8 +294,27 @@ export default function RichEditor({ content, onChange, placeholder }: RichEdito
       </div>
 
       {/* Editor content */}
-      <div className="flex-1 overflow-auto p-6 bg-white rounded-b-xl">
+      <div 
+        ref={editorRef}
+        className="flex-1 overflow-auto p-6 bg-white rounded-b-xl relative"
+      >
         <EditorContent editor={editor} />
+        
+        {/* Floating add context button */}
+        {showAddButton && (
+          <button
+            ref={buttonRef}
+            onClick={handleAddContext}
+            className="absolute z-10 w-8 h-8 bg-ink-900 text-cream-100 rounded-full shadow-lg hover:bg-ink-800 transition-all flex items-center justify-center animate-in fade-in duration-200"
+            style={{
+              top: `${buttonPosition.top}px`,
+              left: `${buttonPosition.left}px`,
+            }}
+            title="Add to AI context"
+          >
+            <Plus className="w-4 h-4" />
+          </button>
+        )}
       </div>
     </div>
   )
