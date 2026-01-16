@@ -84,7 +84,7 @@ export default function Profile() {
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/dashboard" className="flex items-center gap-2">
             <PenLine className="w-6 h-6 text-ink-900" />
-            <span className="font-display text-xl font-semibold text-ink-900">Inkwell</span>
+            <span className="font-display text-xl font-semibold text-ink-900">Writewell</span>
           </Link>
           <Link
             to="/dashboard"

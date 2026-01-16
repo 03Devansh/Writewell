@@ -278,7 +278,7 @@ export default function Editor() {
             minWidth={200}
             maxWidth={600}
             side="left"
-            storageKey="inkwell-knowledge-panel-width"
+            storageKey="writewell-knowledge-panel-width"
           >
             <div className="h-full overflow-hidden animate-slide-in-left">
               <KnowledgePanel documentId={documentId} token={token} />
@@ -305,7 +305,7 @@ export default function Editor() {
             minWidth={250}
             maxWidth={600}
             side="right"
-            storageKey="inkwell-ai-chat-panel-width"
+            storageKey="writewell-ai-chat-panel-width"
           >
             <div className="h-full overflow-hidden animate-slide-in-right">
               <AIChat

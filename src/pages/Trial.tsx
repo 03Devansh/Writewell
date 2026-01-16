@@ -48,7 +48,7 @@ export default function Trial() {
         <Link to="/" className="flex items-center gap-2 w-fit">
           <PenLine className="w-6 h-6 text-ink-900" />
           <span className="font-display text-xl font-semibold text-ink-900">
-            Inkwell
+            Writewell
           </span>
         </Link>
       </header>
@@ -64,7 +64,7 @@ export default function Trial() {
               Start Your Free Trial
             </h1>
             <p className="font-body text-lg text-charcoal-600 max-w-md mx-auto">
-              Unlock the full power of Inkwell with AI-assisted writing, knowledge
+              Unlock the full power of Writewell with AI-assisted writing, knowledge
               management, and more.
             </p>
           </div>

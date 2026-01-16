@@ -27,7 +27,7 @@ export default function Landing() {
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
             <PenLine className="w-6 h-6 text-ink-900" />
-            <span className="font-display text-xl font-semibold text-ink-900">Inkwell</span>
+            <span className="font-display text-xl font-semibold text-ink-900">Writewell</span>
           </Link>
           <div className="flex items-center gap-4">
             {user ? (
@@ -65,7 +65,7 @@ export default function Landing() {
           </h1>
           
           <p className="font-body text-xl text-charcoal-600 mb-10 max-w-2xl mx-auto leading-relaxed animate-slide-up" style={{ animationDelay: '0.1s' }}>
-            Inkwell helps you craft exceptional documents by combining your knowledge 
+            Writewell helps you craft exceptional documents by combining your knowledge 
             with AI assistance. Add references, get intelligent suggestions, and write 
             research papers with confidence.
           </p>
@@ -159,7 +159,7 @@ export default function Landing() {
               Everything you need to write brilliantly
             </h2>
             <p className="font-body text-lg text-charcoal-600 max-w-2xl mx-auto">
-              Inkwell combines powerful features with elegant simplicity to help you 
+              Writewell combines powerful features with elegant simplicity to help you 
               create outstanding documents.
             </p>
           </div>
@@ -227,7 +227,7 @@ export default function Landing() {
             Ready to transform your writing?
           </h2>
           <p className="font-body text-lg text-charcoal-600 mb-8">
-            Join Inkwell today and experience the future of document creation.
+            Join Writewell today and experience the future of document creation.
           </p>
           <Link
             to="/auth"
@@ -244,14 +244,14 @@ export default function Landing() {
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <PenLine className="w-5 h-5 text-ink-900" />
-            <span className="font-display text-lg font-semibold text-ink-900">Inkwell</span>
+            <span className="font-display text-lg font-semibold text-ink-900">Writewell</span>
           </div>
           <div className="flex items-center gap-6">
             <Link to="/style-guide" className="font-ui text-sm text-ink-900 hover:text-ink-700 transition-colors font-medium">
               STYLE GUIDE
             </Link>
             <p className="font-ui text-sm text-charcoal-500">
-              © 2026 Inkwell. Crafted with care.
+              © 2026 Writewell. Crafted with care.
             </p>
           </div>
         </div>

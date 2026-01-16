@@ -21,7 +21,7 @@ if (!convexUrl) {
             </svg>
           </div>
           <h1 className="font-display text-2xl font-bold text-charcoal-900 mb-4">
-            Welcome to Inkwell
+            Welcome to Writewell
           </h1>
           <p className="font-body text-charcoal-600 mb-6">
             To get started, you need to set up Convex. Follow these steps:

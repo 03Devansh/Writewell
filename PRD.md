@@ -1,5 +1,5 @@
 # Product Requirements Document (PRD)
-## Inkwell - AI-Powered Document Writing Application
+## Writewell - AI-Powered Document Writing Application
 
 **Version:** 1.0  
 **Date:** January 2025  
@@ -10,7 +10,7 @@
 ## 1. Executive Summary
 
 ### 1.1 Product Overview
-Inkwell is a beautiful, AI-powered document writing application designed to help users write research papers and professional documents by integrating their knowledge base with intelligent AI assistance. The application combines a rich text editor with contextual AI that understands both the document content and user-provided references.
+Writewell is a beautiful, AI-powered document writing application designed to help users write research papers and professional documents by integrating their knowledge base with intelligent AI assistance. The application combines a rich text editor with contextual AI that understands both the document content and user-provided references.
 
 ### 1.2 Product Vision
 To empower writers, researchers, and academics with an intelligent writing assistant that seamlessly integrates their knowledge base, enabling them to create exceptional documents with confidence and efficiency.

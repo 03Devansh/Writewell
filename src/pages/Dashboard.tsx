@@ -196,7 +196,7 @@ export default function Dashboard() {
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
             <PenLine className="w-6 h-6 text-ink-900" />
-            <span className="font-display text-xl font-semibold text-ink-900">Inkwell</span>
+            <span className="font-display text-xl font-semibold text-ink-900">Writewell</span>
           </Link>
           <AccountDropdown />
         </div>

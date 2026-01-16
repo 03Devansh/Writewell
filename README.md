@@ -1,4 +1,4 @@
-# Inkwell
+# Writewell
 
 A beautiful, AI-powered document writing application that helps you write research papers and documents by referencing your knowledge base.
 
@@ -31,7 +31,7 @@ A beautiful, AI-powered document writing application that helps you write resear
 
 1. Clone the repository and navigate to it:
    ```bash
-   cd Inkwell
+   cd Writewell
    ```
 
 2. Install dependencies:
@@ -71,7 +71,7 @@ A beautiful, AI-powered document writing application that helps you write resear
 ## Project Structure
 
 ```
-Inkwell/
+Writewell/
 ├── convex/                 # Convex backend
 │   ├── _generated/        # Auto-generated Convex files
 │   ├── schema.ts          # Database schema

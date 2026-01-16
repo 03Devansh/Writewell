@@ -66,7 +66,7 @@ export default function Auth() {
       <header className="p-6">
         <Link to="/" className="flex items-center gap-2 w-fit">
           <PenLine className="w-6 h-6 text-ink-900" />
-          <span className="font-display text-xl font-semibold text-ink-900">Inkwell</span>
+          <span className="font-display text-xl font-semibold text-ink-900">Writewell</span>
         </Link>
       </header>
 
