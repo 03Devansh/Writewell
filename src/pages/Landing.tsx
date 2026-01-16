@@ -246,9 +246,14 @@ export default function Landing() {
             <PenLine className="w-5 h-5 text-ink-900" />
             <span className="font-display text-lg font-semibold text-ink-900">Inkwell</span>
           </div>
-          <p className="font-ui text-sm text-charcoal-500">
-            © 2026 Inkwell. Crafted with care.
-          </p>
+          <div className="flex items-center gap-6">
+            <Link to="/style-guide" className="font-ui text-sm text-ink-900 hover:text-ink-700 transition-colors font-medium">
+              STYLE GUIDE
+            </Link>
+            <p className="font-ui text-sm text-charcoal-500">
+              © 2026 Inkwell. Crafted with care.
+            </p>
+          </div>
         </div>
       </footer>
     </div>

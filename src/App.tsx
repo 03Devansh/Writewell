@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard'
 import Editor from './pages/Editor'
 import Profile from './pages/Profile'
 import Trial from './pages/Trial'
+import StyleGuide from '../new-style-guide/StyleGuide'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, isLoading, token } = useAuth()
@@ -101,6 +102,7 @@ function App() {
         }
       />
       <Route path="/trial" element={<Trial />} />
+      <Route path="/style-guide" element={<StyleGuide />} />
 
     </Routes>
   )

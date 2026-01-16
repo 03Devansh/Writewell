@@ -13,6 +13,7 @@ import type * as auth from "../auth.js";
 import type * as documents from "../documents.js";
 import type * as http from "../http.js";
 import type * as knowledge from "../knowledge.js";
+import type * as webhookVerification from "../webhookVerification.js";
 
 import type {
   ApiFromModules,
@@ -26,6 +27,7 @@ declare const fullApi: ApiFromModules<{
   documents: typeof documents;
   http: typeof http;
   knowledge: typeof knowledge;
+  webhookVerification: typeof webhookVerification;
 }>;
 
 /**
