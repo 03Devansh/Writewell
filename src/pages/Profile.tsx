@@ -153,6 +153,49 @@ export default function Profile() {
               />
             </div>
 
+            {/* Error message */}
+            {error && (
+              <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-sm font-ui text-red-600">{error}</p>
+              </div>
+            )}
+
+            {/* Success message */}
+            {success && (
+              <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-sm font-ui text-green-600">
+                  Profile updated successfully!
+                </p>
+              </div>
+            )}
+
+            {/* Submit button */}
+            <div className="flex items-center gap-4 pt-4">
+              <button
+                type="submit"
+                disabled={isSaving}
+                className="btn-primary flex items-center gap-2 disabled:opacity-50"
+              >
+                {isSaving ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-cream-100 border-t-transparent rounded-full animate-spin" />
+                    <span>Saving...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4" />
+                    <span>Save Changes</span>
+                  </>
+                )}
+              </button>
+              <Link
+                to="/dashboard"
+                className="btn-ghost"
+              >
+                Cancel
+              </Link>
+            </div>
+
             {/* AI Writing Instructions section */}
             <div className="pt-6 border-t border-cream-300">
               <label
@@ -197,49 +240,6 @@ export default function Profile() {
                   </span>
                 )}
               </div>
-            </div>
-
-            {/* Error message */}
-            {error && (
-              <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-sm font-ui text-red-600">{error}</p>
-              </div>
-            )}
-
-            {/* Success message */}
-            {success && (
-              <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-sm font-ui text-green-600">
-                  Profile updated successfully!
-                </p>
-              </div>
-            )}
-
-            {/* Submit button */}
-            <div className="flex items-center gap-4 pt-4">
-              <button
-                type="submit"
-                disabled={isSaving}
-                className="btn-primary flex items-center gap-2 disabled:opacity-50"
-              >
-                {isSaving ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-cream-100 border-t-transparent rounded-full animate-spin" />
-                    <span>Saving...</span>
-                  </>
-                ) : (
-                  <>
-                    <Save className="w-4 h-4" />
-                    <span>Save Changes</span>
-                  </>
-                )}
-              </button>
-              <Link
-                to="/dashboard"
-                className="btn-ghost"
-              >
-                Cancel
-              </Link>
             </div>
           </form>
         </div>

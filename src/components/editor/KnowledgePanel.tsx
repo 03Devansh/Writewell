@@ -277,14 +277,14 @@ export default function KnowledgePanel({ documentId, token }: KnowledgePanelProp
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
               placeholder="Title (e.g., 'Research Paper 2024')"
-              className="w-full px-3 py-2 text-sm text-white border border-charcoal-200 rounded-lg mb-2 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent font-ui"
+              className="w-full px-3 py-1.5 text-sm text-charcoal-700 bg-cream-50 border border-cream-300 rounded-lg mb-2 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent focus:bg-white focus:py-2 transition-all font-ui placeholder:text-charcoal-400"
             />
             <textarea
               value={newContent}
               onChange={(e) => setNewContent(e.target.value)}
               placeholder="Paste content, notes, or key information..."
-              rows={4}
-              className="w-full px-3 py-2 text-sm text-white border border-charcoal-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent font-body"
+              rows={3}
+              className="w-full px-3 py-1.5 text-sm text-charcoal-700 bg-cream-50 border border-cream-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent focus:bg-white focus:py-2 transition-all font-body placeholder:text-charcoal-400"
             />
             <div className="flex justify-end gap-2 mt-3">
               <button

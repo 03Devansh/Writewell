@@ -1,0 +1,651 @@
+[
+  {
+    "id": "TC001",
+    "title": "User sign-up with valid email and password",
+    "description": "Verify that new users can sign up using a valid email and password, and receive a confirmation of successful registration.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the sign-up page"
+      },
+      {
+        "type": "action",
+        "description": "Input valid email and password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm user is registered and redirected to onboarding or dashboard"
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "User sign-up with invalid email format",
+    "description": "Ensure the system rejects sign-up attempts with invalid email formats and displays appropriate error messages.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the sign-up page"
+      },
+      {
+        "type": "action",
+        "description": "Input invalid email format and valid password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form"
+      },
+      {
+        "type": "assertion",
+        "description": "Check that error message for invalid email format is shown and registration is not allowed"
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "User login with valid credentials",
+    "description": "Verify existing users can log in with correct email and password and receive access to the dashboard.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to login page"
+      },
+      {
+        "type": "action",
+        "description": "Enter valid email and password"
+      },
+      {
+        "type": "action",
+        "description": "Click on login button"
+      },
+      {
+        "type": "assertion",
+        "description": "User is authenticated and redirected to dashboard page"
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "User login with incorrect password",
+    "description": "Verify system prevents login when the password is incorrect and displays an error message.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to login page"
+      },
+      {
+        "type": "action",
+        "description": "Enter valid email and incorrect password"
+      },
+      {
+        "type": "action",
+        "description": "Click on login button"
+      },
+      {
+        "type": "assertion",
+        "description": "Login is rejected and appropriate error message is shown"
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "Session persistence after login",
+    "description": "Check that user session remains active after page refresh and navigation, providing a seamless experience.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Log in with valid credentials"
+      },
+      {
+        "type": "action",
+        "description": "Refresh the browser or navigate to a new page"
+      },
+      {
+        "type": "assertion",
+        "description": "User remains logged in and session is maintained"
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "User profile editing and saving changes",
+    "description": "Verify users can update profile information (name, email, global AI instructions) and changes are saved correctly.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Log in and navigate to profile page"
+      },
+      {
+        "type": "action",
+        "description": "Edit profile fields including name, email, and global AI instructions"
+      },
+      {
+        "type": "action",
+        "description": "Save the changes"
+      },
+      {
+        "type": "assertion",
+        "description": "Profile updates are persisted and reflected on reload"
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "Subscription status enforcement for feature access",
+    "description": "Validate that subscription status is checked in real-time and restricts access to paid features for non-subscribed users.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Log in as a user with an expired or trial subscription"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to access paid features like document creation or AI assistant"
+      },
+      {
+        "type": "assertion",
+        "description": "User is prevented from using paid features and prompted to upgrade subscription"
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "Subscription trial checkout flow",
+    "description": "Test the complete trial subscription checkout process via Polar integration and verify trial subscription is activated.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Visit sign-up and initiate trial flow"
+      },
+      {
+        "type": "action",
+        "description": "Complete checkout using Polar's trial subscription"
+      },
+      {
+        "type": "assertion",
+        "description": "Trial subscription is activated and user can access subscription-restricted features"
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "Document creation from dashboard",
+    "description": "Validate that users can create new documents from the dashboard and the new document opens in the editor.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Log in and navigate to document dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Click create new document button"
+      },
+      {
+        "type": "assertion",
+        "description": "New blank document is created and editor page is displayed"
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "Inline document title editing with persistence",
+    "description": "Ensure that document titles can be edited inline on the dashboard and changes persist after reload.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open document dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Edit document title inline"
+      },
+      {
+        "type": "action",
+        "description": "Save and refresh dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Edited title is displayed and saved correctly"
+      }
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "Document deletion from dashboard",
+    "description": "Verify that users can delete documents from the dashboard and the document list updates accordingly.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to document dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Select a document and choose delete option"
+      },
+      {
+        "type": "assertion",
+        "description": "Document is removed from dashboard and no longer accessible"
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "Rich text formatting features in editor",
+    "description": "Test all rich text formatting options including bold, italic, underline, strikethrough, headings H1-H3, lists, blockquotes, and paragraph formatting.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open an existing document in the editor"
+      },
+      {
+        "type": "action",
+        "description": "Apply each formatting option to sample text using toolbar and keyboard shortcuts"
+      },
+      {
+        "type": "assertion",
+        "description": "Formatted text appears correctly in editor with expected styles"
+      }
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "Auto-save completes within 500ms and updates save status indicator",
+    "description": "Verify that document changes trigger auto-save which completes within 500ms and the save status indicator updates accordingly.",
+    "category": "performance",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open document editor and make content changes"
+      },
+      {
+        "type": "assertion",
+        "description": "Auto-save executes within 500ms of last change"
+      },
+      {
+        "type": "assertion",
+        "description": "Save status indicator changes from 'Saving...' to 'Saved' after auto-save"
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "Manual save shortcut functionality",
+    "description": "Ensure that users can manually trigger save using provided shortcuts and the save status indicator reflects saving state.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open a document and make changes"
+      },
+      {
+        "type": "action",
+        "description": "Use manual save keyboard shortcut"
+      },
+      {
+        "type": "assertion",
+        "description": "Document is saved and status indicator shows success"
+      }
+    ]
+  },
+  {
+    "id": "TC015",
+    "title": "Unsaved changes warning on navigation",
+    "description": "Test that users receive a warning about unsaved changes when trying to navigate away from the editor without saving.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Edit document content without triggering auto-save or manual save"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to navigate away from editor page"
+      },
+      {
+        "type": "assertion",
+        "description": "Warning prompt appears indicating unsaved changes"
+      }
+    ]
+  },
+  {
+    "id": "TC016",
+    "title": "Knowledge base add, view, and delete knowledge items",
+    "description": "Verify that users can add new knowledge entries, view the list of knowledge items, and delete entries without errors.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open the knowledge base sidebar in editor"
+      },
+      {
+        "type": "action",
+        "description": "Add a new knowledge item with title and content"
+      },
+      {
+        "type": "assertion",
+        "description": "New knowledge item appears in list"
+      },
+      {
+        "type": "action",
+        "description": "Select and delete a knowledge item"
+      },
+      {
+        "type": "assertion",
+        "description": "Deleted knowledge item is removed from the list"
+      }
+    ]
+  },
+  {
+    "id": "TC017",
+    "title": "Knowledge base items included in AI writing context",
+    "description": "Ensure that added knowledge base entries are correctly included as context for AI writing assistant responses.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Add knowledge items in knowledge base"
+      },
+      {
+        "type": "action",
+        "description": "Open AI chat assistant and submit a relevant query"
+      },
+      {
+        "type": "assertion",
+        "description": "AI responses incorporate information from knowledge base entries"
+      }
+    ]
+  },
+  {
+    "id": "TC018",
+    "title": "AI chat assistant response time and accuracy",
+    "description": "Verify AI chat assistant responds within 5-10 seconds with relevant answers based on document content, knowledge base, chat history, and AI instructions.",
+    "category": "performance",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open AI chat panel in editor"
+      },
+      {
+        "type": "action",
+        "description": "Send a context-rich query"
+      },
+      {
+        "type": "assertion",
+        "description": "AI responds within 10 seconds with contextually relevant and coherent information"
+      }
+    ]
+  },
+  {
+    "id": "TC019",
+    "title": "AI chat insertion and copying of responses",
+    "description": "Verify users can insert AI-generated responses into the document or copy the text to clipboard successfully.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Generate AI response in chat assistant"
+      },
+      {
+        "type": "action",
+        "description": "Use options to insert AI text into document editor and copy to clipboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Inserted text appears in editor and copied text matches response"
+      }
+    ]
+  },
+  {
+    "id": "TC020",
+    "title": "Global and document-specific AI instructions management",
+    "description": "Validate creation, editing, saving, and application of global and document-specific AI instructions to customize AI writing style.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to profile page and edit global AI instructions"
+      },
+      {
+        "type": "action",
+        "description": "Open document and apply document-specific AI instructions"
+      },
+      {
+        "type": "assertion",
+        "description": "AI assistant behavior reflects the custom instructions provided"
+      }
+    ]
+  },
+  {
+    "id": "TC021",
+    "title": "Document export to DOCX format preserves formatting",
+    "description": "Test exporting document to DOCX format preserves all rich text formatting including styles, headings, lists, and blockquotes accurately.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open a document with diverse formatting"
+      },
+      {
+        "type": "action",
+        "description": "Export document as DOCX"
+      },
+      {
+        "type": "assertion",
+        "description": "Downloaded DOCX file opens correctly with all formatting preserved"
+      }
+    ]
+  },
+  {
+    "id": "TC022",
+    "title": "Document export to PDF preserves formatting and multi-page layout",
+    "description": "Verify exporting documents to PDF maintains the styles, headings, and layouts across multiple pages as in the editor.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open a multi-page formatted document"
+      },
+      {
+        "type": "action",
+        "description": "Export document as PDF"
+      },
+      {
+        "type": "assertion",
+        "description": "Generated PDF preserves content layout and formatting across all pages"
+      }
+    ]
+  },
+  {
+    "id": "TC023",
+    "title": "Responsive UI behavior across desktop, tablet, and mobile devices",
+    "description": "Ensure the application UI with three-panel layout adjusts correctly and maintains usability on desktop, tablet, and mobile screen sizes.",
+    "category": "ui",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open application on desktop, resize window to tablet and mobile dimensions or use device simulator"
+      },
+      {
+        "type": "assertion",
+        "description": "Three-panel layout collapses and rearranges appropriately; sidebars can be toggled; UI elements remain accessible and usable"
+      }
+    ]
+  },
+  {
+    "id": "TC024",
+    "title": "Accessibility compliance for keyboard navigation and color contrast",
+    "description": "Verify all features support keyboard-only navigation and comply with WCAG AA color contrast standards for accessibility.",
+    "category": "ui",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate through application UI elements using keyboard only"
+      },
+      {
+        "type": "assertion",
+        "description": "All interactive elements are focusable and operable via keyboard"
+      },
+      {
+        "type": "action",
+        "description": "Use color contrast analysis tools on UI components"
+      },
+      {
+        "type": "assertion",
+        "description": "UI meets WCAG AA color contrast requirements"
+      }
+    ]
+  },
+  {
+    "id": "TC025",
+    "title": "Save operation latency and system uptime",
+    "description": "Verify average save operation latency is below 100ms and system maintains 99.9% uptime during extended testing periods.",
+    "category": "performance",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Perform multiple document save operations and measure latency"
+      },
+      {
+        "type": "assertion",
+        "description": "Average latency per save operation is under 100ms"
+      },
+      {
+        "type": "action",
+        "description": "Monitor system operational status over uptime test window"
+      },
+      {
+        "type": "assertion",
+        "description": "System uptime is at least 99.9%"
+      }
+    ]
+  },
+  {
+    "id": "TC026",
+    "title": "Robust error handling for network failures during document save",
+    "description": "Check the application handles network disruptions gracefully during save operations with retries and error messages.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Simulate network failure during document auto-save or manual save"
+      },
+      {
+        "type": "assertion",
+        "description": "User is notified of save error and automatic retry logic is triggered"
+      },
+      {
+        "type": "action",
+        "description": "Restore network and verify save completion"
+      },
+      {
+        "type": "assertion",
+        "description": "Document is saved successfully after reconnection"
+      }
+    ]
+  },
+  {
+    "id": "TC027",
+    "title": "Security: password hashing and HTTPS enforcement",
+    "description": "Verify passwords are stored using secure hashing and all communications are forced over HTTPS to protect user data.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Review backend user password storage implementation"
+      },
+      {
+        "type": "assertion",
+        "description": "Passwords are stored as secure hashes, not plain text"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to access application over HTTP"
+      },
+      {
+        "type": "assertion",
+        "description": "HTTP requests are redirected to HTTPS and connection is secure"
+      }
+    ]
+  },
+  {
+    "id": "TC028",
+    "title": "Security: CSRF protection on state-changing requests",
+    "description": "Ensure the application protects against cross-site request forgery (CSRF) attacks on forms and API calls changing user or document data.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Inspect forms and API requests for presence of CSRF tokens"
+      },
+      {
+        "type": "assertion",
+        "description": "CSRF tokens are present and validated for all state-changing operations"
+      }
+    ]
+  },
+  {
+    "id": "TC029",
+    "title": "User data scoped access control enforcement",
+    "description": "Verify that users can only access their own documents, knowledge base items, and profile data and cannot view or modify others' data.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Log in as two different users"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to access documents and knowledge base items belonging to another user via URL or API"
+      },
+      {
+        "type": "assertion",
+        "description": "Access is denied and data is protected"
+      }
+    ]
+  }
+]

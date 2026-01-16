@@ -6,8 +6,10 @@ import { api } from "./_generated/api";
 const http = httpRouter();
 
 // Webhook secret from Polar (get from environment variable or use default)
-const POLAR_WEBHOOK_SECRET = process.env.POLAR_WEBHOOK_SECRET || "polar_whs_YSwqBQUpuPEZd4uCtZnsVanUhX1TSfgkLwpqg27e5SW";
-
+const POLAR_WEBHOOK_SECRET = process.env.POLAR_WEBHOOK_SECRET;
+if (!POLAR_WEBHOOK_SECRET) {
+  throw new Error("POLAR_WEBHOOK_SECRET environment variable is required");
+}
 // Test endpoint to verify webhook URL is accessible
 http.route({
   path: "/webhooks/polar",

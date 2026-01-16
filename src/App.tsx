@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard'
 import Editor from './pages/Editor'
 import Profile from './pages/Profile'
 import Trial from './pages/Trial'
+import PaymentConfirming from './pages/PaymentConfirming'
 import StyleGuide from '../new-style-guide/StyleGuide'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -102,6 +103,14 @@ function App() {
         }
       />
       <Route path="/trial" element={<Trial />} />
+      <Route
+        path="/payment-confirming"
+        element={
+          <ProtectedRoute>
+            <PaymentConfirming />
+          </ProtectedRoute>
+        }
+      />
       <Route path="/style-guide" element={<StyleGuide />} />
 
     </Routes>

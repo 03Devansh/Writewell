@@ -1,0 +1,133 @@
+{
+  "tech_stack": [
+    "TypeScript",
+    "React",
+    "Vite",
+    "Convex",
+    "Tailwind CSS",
+    "TipTap",
+    "OpenAI",
+    "React Router DOM",
+    "Lucide React",
+    "docx",
+    "jspdf",
+    "html2canvas",
+    "file-saver",
+    "Polar"
+  ],
+  "features": [
+    {
+      "name": "User Authentication",
+      "description": "Email/password authentication with session management, sign up, sign in, sign out, and profile management",
+      "files": [
+        "src/pages/Auth.tsx",
+        "src/contexts/AuthContext.tsx",
+        "convex/auth.ts"
+      ]
+    },
+    {
+      "name": "Document Dashboard",
+      "description": "Grid layout displaying all user documents with create, delete, and preview functionality",
+      "files": [
+        "src/pages/Dashboard.tsx",
+        "convex/documents.ts"
+      ]
+    },
+    {
+      "name": "Rich Text Editor",
+      "description": "Full-featured editor powered by TipTap with formatting (bold, italic, underline, strikethrough), headings (H1-H3), lists, blockquotes, auto-save, and export functionality",
+      "files": [
+        "src/components/editor/RichEditor.tsx",
+        "src/pages/Editor.tsx"
+      ]
+    },
+    {
+      "name": "Document Management",
+      "description": "Create, read, update, delete documents with auto-save, title editing, and save status indicators",
+      "files": [
+        "src/pages/Editor.tsx",
+        "convex/documents.ts"
+      ]
+    },
+    {
+      "name": "Knowledge Base",
+      "description": "Add, view, and delete knowledge items (references, notes, research papers) that provide context to AI",
+      "files": [
+        "src/components/editor/KnowledgePanel.tsx",
+        "convex/knowledge.ts"
+      ]
+    },
+    {
+      "name": "AI Writing Assistant",
+      "description": "Context-aware AI chat that uses document content, knowledge base, chat history, and AI instructions to provide writing assistance",
+      "files": [
+        "src/components/editor/AIChat.tsx",
+        "convex/ai.ts"
+      ]
+    },
+    {
+      "name": "AI Instructions Management",
+      "description": "Global and document-specific AI instructions to customize AI behavior and writing style",
+      "files": [
+        "src/pages/Profile.tsx",
+        "src/components/editor/KnowledgePanel.tsx",
+        "convex/auth.ts",
+        "convex/documents.ts"
+      ]
+    },
+    {
+      "name": "Document Export",
+      "description": "Export documents to DOCX and PDF formats with formatting preservation",
+      "files": [
+        "src/utils/exportUtils.ts",
+        "src/components/editor/RichEditor.tsx"
+      ]
+    },
+    {
+      "name": "Subscription Management",
+      "description": "Subscription status checking, trial flow, and Polar checkout integration",
+      "files": [
+        "src/pages/Trial.tsx",
+        "convex/auth.ts",
+        "convex/http.ts",
+        "convex/webhookVerification.ts"
+      ]
+    },
+    {
+      "name": "User Profile",
+      "description": "Profile management with name, email, and global AI instructions editing",
+      "files": [
+        "src/pages/Profile.tsx",
+        "convex/auth.ts"
+      ]
+    },
+    {
+      "name": "Landing Page",
+      "description": "Marketing landing page with hero section, features showcase, and call-to-action",
+      "files": [
+        "src/pages/Landing.tsx"
+      ]
+    },
+    {
+      "name": "Account Dropdown",
+      "description": "User account dropdown with profile and logout options",
+      "files": [
+        "src/components/AccountDropdown.tsx"
+      ]
+    },
+    {
+      "name": "Routing and Navigation",
+      "description": "React Router setup with protected routes, public routes, and navigation between pages",
+      "files": [
+        "src/App.tsx"
+      ]
+    },
+    {
+      "name": "Database Schema",
+      "description": "Convex schema definitions for users, documents, knowledge, and sessions tables",
+      "files": [
+        "convex/schema.ts"
+      ]
+    }
+  ]
+}

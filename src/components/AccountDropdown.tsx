@@ -1,12 +1,14 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { LogOut, User, ChevronDown } from 'lucide-react'
+import { LogOut, User, ChevronDown, CreditCard } from 'lucide-react'
+import ManageSubscriptionModal from './ManageSubscriptionModal'
 
 export default function AccountDropdown() {
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false)
+  const [isManageSubscriptionOpen, setIsManageSubscriptionOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   // Close dropdown when clicking outside
@@ -62,6 +64,16 @@ export default function AccountDropdown() {
               Profile
             </Link>
             <button
+              onClick={() => {
+                setIsOpen(false)
+                setIsManageSubscriptionOpen(true)
+              }}
+              className="w-full px-4 py-2 text-left text-sm font-ui text-charcoal-700 hover:bg-cream-100 flex items-center gap-2 transition-colors"
+            >
+              <CreditCard className="w-4 h-4" />
+              Manage Subscription
+            </button>
+            <button
               onClick={handleSignOut}
               className="w-full px-4 py-2 text-left text-sm font-ui text-red-600 hover:bg-red-50 flex items-center gap-2 transition-colors"
             >
@@ -71,6 +83,10 @@ export default function AccountDropdown() {
           </div>
         </>
       )}
+      <ManageSubscriptionModal 
+        isOpen={isManageSubscriptionOpen}
+        onClose={() => setIsManageSubscriptionOpen(false)}
+      />
     </div>
   )
 }

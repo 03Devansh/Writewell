@@ -17,13 +17,17 @@ import {
   Undo,
   Redo,
   Plus,
+  Download,
+  ChevronDown,
 } from 'lucide-react'
+import { exportToDocx, exportToPdf } from '../../utils/exportUtils'
 
 interface RichEditorProps {
   content: string
   onChange: (content: string) => void
   placeholder?: string
   onAddContext?: (text: string) => void
+  title?: string
 }
 
 interface ToolbarButtonProps {
@@ -57,12 +61,14 @@ function ToolbarDivider() {
   return <div className="w-px h-6 bg-charcoal-200 mx-1" />
 }
 
-export default function RichEditor({ content, onChange, placeholder, onAddContext }: RichEditorProps) {
+export default function RichEditor({ content, onChange, placeholder, onAddContext, title }: RichEditorProps) {
   const [showAddButton, setShowAddButton] = useState(false)
   const [buttonPosition, setButtonPosition] = useState({ top: 0, left: 0 })
   const [selectedText, setSelectedText] = useState('')
+  const [showExportMenu, setShowExportMenu] = useState(false)
   const editorRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
+  const exportMenuRef = useRef<HTMLDivElement>(null)
 
   const editor = useEditor({
     extensions: [
@@ -181,6 +187,48 @@ export default function RichEditor({ content, onChange, placeholder, onAddContex
     }
   }
 
+  // Handle export dropdown click outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        exportMenuRef.current &&
+        !exportMenuRef.current.contains(event.target as Node) &&
+        !(event.target as Element)?.closest('[data-export-button]')
+      ) {
+        setShowExportMenu(false)
+      }
+    }
+
+    if (showExportMenu) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showExportMenu])
+
+  const handleExportDocx = async () => {
+    if (!editor) return
+    try {
+      const htmlContent = editor.getHTML()
+      await exportToDocx(htmlContent, title || 'Untitled Document')
+      setShowExportMenu(false)
+    } catch (error) {
+      console.error('Export failed:', error)
+      alert('Failed to export document. Please try again.')
+    }
+  }
+
+  const handleExportPdf = async () => {
+    if (!editor) return
+    try {
+      const htmlContent = editor.getHTML()
+      await exportToPdf(htmlContent, title || 'Untitled Document')
+      setShowExportMenu(false)
+    } catch (error) {
+      console.error('Export failed:', error)
+      alert('Failed to export document. Please try again.')
+    }
+  }
+
   if (!editor) {
     return (
       <div className="animate-pulse">
@@ -291,6 +339,43 @@ export default function RichEditor({ content, onChange, placeholder, onAddContex
         >
           <Redo className="w-4 h-4" />
         </ToolbarButton>
+
+        <ToolbarDivider />
+
+        {/* Export button with dropdown */}
+        <div className="relative" ref={exportMenuRef}>
+          <button
+            data-export-button
+            onClick={() => setShowExportMenu(!showExportMenu)}
+            className={`
+              p-2 rounded-lg transition-colors flex items-center gap-1
+              ${showExportMenu
+                ? 'bg-ink-900 text-cream-100' 
+                : 'text-charcoal-600 hover:bg-cream-200 hover:text-charcoal-900'}
+            `}
+            title="Export"
+          >
+            <Download className="w-4 h-4" />
+            <ChevronDown className="w-3 h-3" />
+          </button>
+          
+          {showExportMenu && (
+            <div className="absolute right-0 top-full mt-1 bg-white border border-cream-300 rounded-lg shadow-lg z-50 min-w-[160px]">
+              <button
+                onClick={handleExportDocx}
+                className="w-full px-4 py-2 text-left text-sm text-charcoal-700 hover:bg-cream-50 transition-colors first:rounded-t-lg last:rounded-b-lg"
+              >
+                Export as DOCX
+              </button>
+              <button
+                onClick={handleExportPdf}
+                className="w-full px-4 py-2 text-left text-sm text-charcoal-700 hover:bg-cream-50 transition-colors first:rounded-t-lg last:rounded-b-lg"
+              >
+                Export as PDF
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Editor content */}

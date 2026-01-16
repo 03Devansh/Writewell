@@ -7,6 +7,7 @@ import AccountDropdown from '../components/AccountDropdown'
 import RichEditor from '../components/editor/RichEditor'
 import KnowledgePanel from '../components/editor/KnowledgePanel'
 import AIChat from '../components/editor/AIChat'
+import ResizablePanel from '../components/ui/ResizablePanel'
 import { 
   PenLine, 
   ArrowLeft, 
@@ -272,9 +273,17 @@ export default function Editor() {
       <div className="flex-1 flex overflow-hidden">
         {/* Left sidebar - Knowledge */}
         {showLeftSidebar && token && (
-          <div className="w-72 flex-shrink-0 overflow-hidden animate-slide-in-left">
-            <KnowledgePanel documentId={documentId} token={token} />
-          </div>
+          <ResizablePanel
+            defaultWidth={288}
+            minWidth={200}
+            maxWidth={600}
+            side="left"
+            storageKey="inkwell-knowledge-panel-width"
+          >
+            <div className="h-full overflow-hidden animate-slide-in-left">
+              <KnowledgePanel documentId={documentId} token={token} />
+            </div>
+          </ResizablePanel>
         )}
 
         {/* Center - Editor */}
@@ -284,20 +293,29 @@ export default function Editor() {
               content={content}
               onChange={handleContentChange}
               placeholder="Start writing your document..."
+              title={title}
             />
           </div>
         </div>
 
         {/* Right sidebar - AI Chat */}
         {showRightSidebar && token && (
-          <div className="w-80 flex-shrink-0 overflow-hidden animate-slide-in-right">
-            <AIChat
-              documentId={documentId}
-              documentContent={content}
-              token={token}
-              aiInstructions={document?.aiInstructions ?? user?.aiGlobalInstructions ?? undefined}
-            />
-          </div>
+          <ResizablePanel
+            defaultWidth={320}
+            minWidth={250}
+            maxWidth={600}
+            side="right"
+            storageKey="inkwell-ai-chat-panel-width"
+          >
+            <div className="h-full overflow-hidden animate-slide-in-right">
+              <AIChat
+                documentId={documentId}
+                documentContent={content}
+                token={token}
+                aiInstructions={document?.aiInstructions ?? user?.aiGlobalInstructions ?? undefined}
+              />
+            </div>
+          </ResizablePanel>
         )}
       </div>
     </div>

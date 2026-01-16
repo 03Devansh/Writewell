@@ -1,8 +1,6 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { useQuery } from 'convex/react'
-import { api } from '../../convex/_generated/api'
 import { PenLine, Check, Sparkles } from 'lucide-react'
 
 const CHECKOUT_LINK =
@@ -10,56 +8,9 @@ const CHECKOUT_LINK =
 
 export default function Trial() {
   const [isLoading, setIsLoading] = useState(false)
-  const [isCheckingSubscription, setIsCheckingSubscription] = useState(false)
-  const { signOut, token } = useAuth()
+  const { signOut } = useAuth()
   const navigate = useNavigate()
   const checkoutWindowRef = useRef<Window | null>(null)
-  const pollIntervalRef = useRef<NodeJS.Timeout | null>(null)
-
-  // Check subscription status
-  const subscriptionStatus = useQuery(
-    api.auth.getSubscriptionStatus,
-    token ? { token } : 'skip'
-  )
-
-  // Poll for subscription status after checkout
-  useEffect(() => {
-    if (isCheckingSubscription && subscriptionStatus !== undefined) {
-      if (subscriptionStatus.hasActiveSubscription) {
-        // Subscription is active! Redirect to dashboard
-        console.log('Subscription detected! Redirecting to dashboard...')
-        setIsCheckingSubscription(false)
-        if (pollIntervalRef.current) {
-          clearInterval(pollIntervalRef.current)
-          pollIntervalRef.current = null
-        }
-        navigate('/dashboard', { replace: true })
-      }
-    }
-  }, [subscriptionStatus, isCheckingSubscription, navigate])
-
-  // Cleanup polling on unmount
-  useEffect(() => {
-    return () => {
-      if (pollIntervalRef.current) {
-        clearInterval(pollIntervalRef.current)
-      }
-    }
-  }, [])
-
-  // Listen for window focus to check subscription status
-  useEffect(() => {
-    const handleFocus = () => {
-      if (checkoutWindowRef.current?.closed && isCheckingSubscription) {
-        // Checkout window was closed, start polling
-        console.log('Checkout window closed, checking subscription status...')
-        // The subscriptionStatus query will automatically refetch
-      }
-    }
-
-    window.addEventListener('focus', handleFocus)
-    return () => window.removeEventListener('focus', handleFocus)
-  }, [isCheckingSubscription])
 
   const handleStartTrial = () => {
     try {
@@ -67,31 +18,13 @@ export default function Trial() {
       const checkoutWindow = window.open(CHECKOUT_LINK, '_blank', 'noopener,noreferrer')
       checkoutWindowRef.current = checkoutWindow
       
-      // Start checking for subscription after a short delay
-      setIsCheckingSubscription(true)
-      
-      // Poll every 2 seconds for up to 2 minutes
-      let pollCount = 0
-      const maxPolls = 60 // 2 minutes at 2 second intervals
-      
-      pollIntervalRef.current = setInterval(() => {
-        pollCount++
-        if (pollCount >= maxPolls) {
-          // Stop polling after max time
-          if (pollIntervalRef.current) {
-            clearInterval(pollIntervalRef.current)
-            pollIntervalRef.current = null
-          }
-          setIsCheckingSubscription(false)
-          console.log('Stopped polling for subscription status')
-        }
-        // The subscriptionStatus query will automatically refetch due to Convex reactivity
-      }, 2000)
+      // Navigate to payment confirmation page immediately
+      // This shows the loading UI while we wait for payment confirmation
+      navigate('/payment-confirming', { replace: false })
       
       setTimeout(() => setIsLoading(false), 500)
     } catch {
       setIsLoading(false)
-      setIsCheckingSubscription(false)
     }
   }
 
@@ -137,16 +70,6 @@ export default function Trial() {
           </div>
 
           <div className="card p-8 md:p-12">
-            {/* Checking subscription message */}
-            {isCheckingSubscription && (
-              <div className="mb-6 p-4 bg-gold-50 border border-gold-200 rounded-lg">
-                <p className="font-body text-sm text-charcoal-700 text-center">
-                  <span className="inline-block w-4 h-4 border-2 border-gold-700 border-t-transparent rounded-full animate-spin mr-2" />
-                  Waiting for subscription confirmation... If you've completed checkout, we'll redirect you shortly.
-                </p>
-              </div>
-            )}
-
             {/* Pricing */}
             <div className="text-center mb-10">
               <div className="inline-flex items-baseline gap-2 mb-2">
@@ -179,18 +102,13 @@ export default function Trial() {
             {/* CTA */}
             <button
               onClick={handleStartTrial}
-              disabled={isLoading || isCheckingSubscription}
+              disabled={isLoading}
               className="w-full btn-primary flex items-center justify-center gap-2 disabled:opacity-50 py-4 text-lg"
             >
               {isLoading ? (
                 <>
                   <div className="w-5 h-5 border-2 border-cream-100 border-t-transparent rounded-full animate-spin" />
                   <span>Opening checkout…</span>
-                </>
-              ) : isCheckingSubscription ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-cream-100 border-t-transparent rounded-full animate-spin" />
-                  <span>Checking subscription…</span>
                 </>
               ) : (
                 <span>Start Free Trial</span>

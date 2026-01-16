@@ -359,8 +359,8 @@ export default function AIChat({ documentId, documentContent, token, contextItem
             onKeyDown={handleKeyDown}
             placeholder="Ask AI for help..."
             rows={1}
-            className="flex-1 px-3 py-2 text-sm text-white border border-charcoal-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-ink-400 focus:border-transparent font-body max-h-32"
-            style={{ minHeight: '40px' }}
+            className="flex-1 px-3 py-1.5 text-sm text-charcoal-700 bg-cream-50 border border-cream-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-ink-400 focus:border-transparent focus:bg-white focus:py-2 transition-all font-body max-h-32 placeholder:text-charcoal-400"
+            style={{ minHeight: '32px' }}
           />
           <button
             onClick={handleSend}

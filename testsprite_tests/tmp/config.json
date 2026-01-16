@@ -1,0 +1,18 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:5194",
+  "loginUser": "Devanshtest9@yopmail.com",
+  "loginPassword": "Test@9",
+  "executionArgs": {
+    "projectName": "Inkwell",
+    "projectPath": "/Users/devanshagarwal/Desktop/Inkwell",
+    "testIds": [],
+    "additionalInstruction": "",
+    "envs": {
+      "API_KEY": "sk-user-HWJR6SxCkH2gLynITI3pGqvkzxX1pZ2FFS9UIcHXQ1inIOupxWk_dVk3gZg-qZ4VkMrv6qlNLsDAm7aFVTLUjUBcgwBUJ_FnSTe6ByEIUQTXqil5yamEyCbkaRRBv_F2OLQ"
+    }
+  },
+  "proxy": "http://6f195f3b-95a4-4044-a304-d2895c7d633d:oh6LuImn40oFOzXY8xSK0OjLybBkB4uA@tun.testsprite.com:8080"
+}
