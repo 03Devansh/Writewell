@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation } from 'convex/react'
 import { api } from '../../convex/_generated/api'
@@ -13,6 +13,11 @@ import {
   MoreVertical
 } from 'lucide-react'
 import type { Id } from '../../convex/_generated/dataModel'
+
+const PAYMENT_PENDING_KEY = 'writewell_payment_pending'
+const PAYMENT_PENDING_TIMEOUT = 5 * 60 * 1000 // 5 minutes
+const EARLY_ACCESS_KEY = 'writewell_early_access_granted'
+const EARLY_ACCESS_TIMEOUT = 2.1 * 60 * 1000 // 2.1 minutes
 
 function formatDate(timestamp: number): string {
   const date = new Date(timestamp)
@@ -127,6 +132,7 @@ export default function Dashboard() {
   const { token } = useAuth()
   const navigate = useNavigate()
   const [isCreating, setIsCreating] = useState(false)
+  const earlyAccessCheckIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
   // Check subscription status - ONLY on Dashboard route
   const subscriptionStatus = useQuery(
@@ -134,13 +140,80 @@ export default function Dashboard() {
     token ? { token } : 'skip'
   )
 
+  // Continuously check if early access has expired (poll every 5 seconds)
+  useEffect(() => {
+    const checkEarlyAccess = () => {
+      const earlyAccess = localStorage.getItem(EARLY_ACCESS_KEY)
+      if (earlyAccess) {
+        const earlyAccessTimestamp = parseInt(earlyAccess, 10)
+        if (Date.now() - earlyAccessTimestamp > EARLY_ACCESS_TIMEOUT) {
+          // Early access expired, clear both flags and redirect to trial
+          localStorage.removeItem(EARLY_ACCESS_KEY)
+          localStorage.removeItem(PAYMENT_PENDING_KEY)
+          navigate('/trial', { replace: true })
+        }
+      }
+    }
+
+    // Check immediately
+    checkEarlyAccess()
+
+    // Then check every 5 seconds
+    earlyAccessCheckIntervalRef.current = setInterval(checkEarlyAccess, 5000)
+
+    return () => {
+      if (earlyAccessCheckIntervalRef.current) {
+        clearInterval(earlyAccessCheckIntervalRef.current)
+        earlyAccessCheckIntervalRef.current = null
+      }
+    }
+  }, [navigate])
+
   // Redirect unpaid users to trial (not stuck on loader)
+  // BUT: Don't redirect if payment is pending or early access is granted
   useEffect(() => {
     // Handle three states: undefined (loading), or object (resolved - always returns object, never null)
     if (subscriptionStatus !== undefined) {
       // Status is resolved, check if user has active subscription
       if (!subscriptionStatus.hasActiveSubscription) {
+        // Check for early access flag first
+        const earlyAccess = localStorage.getItem(EARLY_ACCESS_KEY)
+        if (earlyAccess) {
+          // Check if early access has expired (older than 2.1 minutes)
+          const earlyAccessTimestamp = parseInt(earlyAccess, 10)
+          if (Date.now() - earlyAccessTimestamp <= EARLY_ACCESS_TIMEOUT) {
+            // Early access is valid, allow access
+            // Continue checking subscription status in background
+            return
+          } else {
+            // Early access expired, clear both flags and redirect to trial
+            localStorage.removeItem(EARLY_ACCESS_KEY)
+            localStorage.removeItem(PAYMENT_PENDING_KEY)
+            navigate('/trial', { replace: true })
+            return
+          }
+        }
+
+        // Check if payment is pending - if so, redirect to payment-confirming instead
+        const paymentPending = localStorage.getItem(PAYMENT_PENDING_KEY)
+        if (paymentPending) {
+          // Check if payment pending has expired (older than 5 minutes)
+          const pendingTimestamp = parseInt(paymentPending, 10)
+          if (Date.now() - pendingTimestamp <= PAYMENT_PENDING_TIMEOUT) {
+            // Payment still pending, go to confirmation page
+            navigate('/payment-confirming', { replace: true })
+            return
+          } else {
+            // Payment pending expired, clear it
+            localStorage.removeItem(PAYMENT_PENDING_KEY)
+          }
+        }
+        // No pending payment or early access, redirect to trial
         navigate('/trial', { replace: true })
+      } else {
+        // Subscription is active, clear any stale payment pending and early access flags
+        localStorage.removeItem(PAYMENT_PENDING_KEY)
+        localStorage.removeItem(EARLY_ACCESS_KEY)
       }
     }
   }, [subscriptionStatus, navigate])

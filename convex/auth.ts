@@ -27,34 +27,54 @@ export const signUp = mutation({
     name: v.string(),
   },
   handler: async (ctx, args) => {
-    const existingUser = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", args.email))
-      .first();
+    try {
+      // Validate inputs
+      if (!args.email || !args.email.trim()) {
+        throw new Error("Email is required");
+      }
+      if (!args.password || args.password.length < 6) {
+        throw new Error("Password must be at least 6 characters");
+      }
+      if (!args.name || !args.name.trim()) {
+        throw new Error("Name is required");
+      }
 
-    if (existingUser) {
-      throw new Error("User with this email already exists");
+      const existingUser = await ctx.db
+        .query("users")
+        .withIndex("by_email", (q) => q.eq("email", args.email.trim().toLowerCase()))
+        .first();
+
+      if (existingUser) {
+        throw new Error("User with this email already exists");
+      }
+
+      const userId = await ctx.db.insert("users", {
+        email: args.email.trim().toLowerCase(),
+        name: args.name.trim(),
+        passwordHash: simpleHash(args.password),
+        createdAt: Date.now(),
+        hasActiveSubscription: false,
+      });
+
+      const token = generateToken();
+      const expiresAt = Date.now() + 7 * 24 * 60 * 60 * 1000;
+
+      await ctx.db.insert("sessions", {
+        userId,
+        token,
+        expiresAt,
+        createdAt: Date.now(),
+      });
+
+      return { userId, token };
+    } catch (error) {
+      console.error("[signUp] Error:", error);
+      // Re-throw with more context if it's not already an Error
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error(`Signup failed: ${String(error)}`);
     }
-
-    const userId = await ctx.db.insert("users", {
-      email: args.email,
-      name: args.name,
-      passwordHash: simpleHash(args.password),
-      createdAt: Date.now(),
-      hasActiveSubscription: false,
-    });
-
-    const token = generateToken();
-    const expiresAt = Date.now() + 7 * 24 * 60 * 60 * 1000;
-
-    await ctx.db.insert("sessions", {
-      userId,
-      token,
-      expiresAt,
-      createdAt: Date.now(),
-    });
-
-    return { userId, token };
   },
 });
 

@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { PenLine, Check, Sparkles } from 'lucide-react'
@@ -6,17 +6,44 @@ import { PenLine, Check, Sparkles } from 'lucide-react'
 const CHECKOUT_LINK =
   'https://buy.polar.sh/polar_cl_LQD0qXROhgxYVq2pGE1B9h25cG15SiJHtgc6L0PcJ73'
 
+const PAYMENT_PENDING_KEY = 'writewell_payment_pending'
+const PAYMENT_PENDING_TIMEOUT = 5 * 60 * 1000 // 5 minutes
+const EARLY_ACCESS_KEY = 'writewell_early_access_granted'
+
 export default function Trial() {
   const [isLoading, setIsLoading] = useState(false)
   const { signOut } = useAuth()
   const navigate = useNavigate()
   const checkoutWindowRef = useRef<Window | null>(null)
 
+  // Check if payment is pending on mount - redirect to confirmation page
+  // Also clear any stale early access flag
+  useEffect(() => {
+    // Clear early access flag if user returns to trial page
+    localStorage.removeItem(EARLY_ACCESS_KEY)
+
+    const paymentPending = localStorage.getItem(PAYMENT_PENDING_KEY)
+    if (paymentPending) {
+      const pendingTimestamp = parseInt(paymentPending, 10)
+      if (Date.now() - pendingTimestamp <= PAYMENT_PENDING_TIMEOUT) {
+        // Payment still pending, redirect to confirmation page
+        navigate('/payment-confirming', { replace: true })
+        return
+      } else {
+        // Payment pending expired, clear it
+        localStorage.removeItem(PAYMENT_PENDING_KEY)
+      }
+    }
+  }, [navigate])
+
   const handleStartTrial = () => {
     try {
       setIsLoading(true)
       const checkoutWindow = window.open(CHECKOUT_LINK, '_blank', 'noopener,noreferrer')
       checkoutWindowRef.current = checkoutWindow
+      
+      // Set payment pending flag with timestamp
+      localStorage.setItem(PAYMENT_PENDING_KEY, Date.now().toString())
       
       // Navigate to payment confirmation page immediately
       // This shows the loading UI while we wait for payment confirmation
