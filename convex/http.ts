@@ -5,11 +5,15 @@ import { api } from "./_generated/api";
 
 const http = httpRouter();
 
-// Webhook secret from Polar (get from environment variable or use default)
-const POLAR_WEBHOOK_SECRET = process.env.POLAR_WEBHOOK_SECRET;
-if (!POLAR_WEBHOOK_SECRET) {
-  throw new Error("POLAR_WEBHOOK_SECRET environment variable is required");
+// Helper function to get webhook secret (lazy evaluation - only checked when webhook is called)
+function getPolarWebhookSecret(): string {
+  const secret = process.env.POLAR_WEBHOOK_SECRET;
+  if (!secret) {
+    throw new Error("POLAR_WEBHOOK_SECRET environment variable is required");
+  }
+  return secret;
 }
+
 // Test endpoint to verify webhook URL is accessible
 http.route({
   path: "/webhooks/polar",
@@ -114,7 +118,8 @@ http.route({
       });
       
       // Verify signature if all headers are present (non-blocking - don't reject on failure)
-      if (webhookId && webhookTimestamp && webhookSignature && POLAR_WEBHOOK_SECRET) {
+      if (webhookId && webhookTimestamp && webhookSignature) {
+        const POLAR_WEBHOOK_SECRET = getPolarWebhookSecret(); // Get secret lazily when needed
         const isValid = await ctx.runAction(api.webhookVerification.verifyWebhookSignature, {
           rawBody: bodyText,
           signature: webhookSignature,

@@ -1,4 +1,4 @@
-import { v } from "convex/values";
+import { v, ConvexError } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
 // Simple hash function for demo purposes
@@ -20,6 +20,19 @@ function generateToken(): string {
   );
 }
 
+function isValidEmailFormat(email: string): boolean {
+  // Basic email format validation: must have @ and a domain with at least one dot
+  if (!email || typeof email !== 'string') {
+    return false;
+  }
+  const trimmedEmail = email.trim();
+  if (!trimmedEmail) {
+    return false;
+  }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(trimmedEmail);
+}
+
 export const signUp = mutation({
   args: {
     email: v.string(),
@@ -27,25 +40,32 @@ export const signUp = mutation({
     name: v.string(),
   },
   handler: async (ctx, args) => {
-    try {
-      // Validate inputs
-      if (!args.email || !args.email.trim()) {
-        throw new Error("Email is required");
-      }
-      if (!args.password || args.password.length < 6) {
-        throw new Error("Password must be at least 6 characters");
-      }
-      if (!args.name || !args.name.trim()) {
-        throw new Error("Name is required");
-      }
+    // Validate inputs - these should throw ConvexError directly, not be caught
+    if (!args.email || !args.email.trim()) {
+      throw new ConvexError("Email is required");
+    }
+    
+    // Validate email format
+    if (!isValidEmailFormat(args.email)) {
+      throw new ConvexError("Please enter a valid email address");
+    }
+    
+    if (!args.password || args.password.length < 6) {
+      throw new ConvexError("Password must be at least 6 characters");
+    }
+    if (!args.name || !args.name.trim()) {
+      throw new ConvexError("Name is required");
+    }
 
+    // Only wrap database operations in try-catch
+    try {
       const existingUser = await ctx.db
         .query("users")
         .withIndex("by_email", (q) => q.eq("email", args.email.trim().toLowerCase()))
         .first();
 
       if (existingUser) {
-        throw new Error("User with this email already exists");
+        throw new ConvexError("User with this email already exists");
       }
 
       const userId = await ctx.db.insert("users", {
@@ -69,11 +89,16 @@ export const signUp = mutation({
       return { userId, token };
     } catch (error) {
       console.error("[signUp] Error:", error);
-      // Re-throw with more context if it's not already an Error
-      if (error instanceof Error) {
+      // If it's already a ConvexError, re-throw it as-is
+      if (error instanceof ConvexError) {
         throw error;
       }
-      throw new Error(`Signup failed: ${String(error)}`);
+      // If it's a regular Error, wrap it in ConvexError
+      if (error instanceof Error) {
+        throw new ConvexError(error.message);
+      }
+      // For any other error type
+      throw new ConvexError(`Signup failed: ${String(error)}`);
     }
   },
 });
@@ -84,13 +109,22 @@ export const signIn = mutation({
     password: v.string(),
   },
   handler: async (ctx, args) => {
+    // Validate email format
+    if (!args.email || !args.email.trim()) {
+      throw new ConvexError("Email is required");
+    }
+    
+    if (!isValidEmailFormat(args.email)) {
+      throw new ConvexError("Please enter a valid email address");
+    }
+    
     const user = await ctx.db
       .query("users")
-      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .withIndex("by_email", (q) => q.eq("email", args.email.trim().toLowerCase()))
       .first();
 
     if (!user || user.passwordHash !== simpleHash(args.password)) {
-      throw new Error("Invalid email or password");
+      throw new ConvexError("Invalid email or password");
     }
 
     const token = generateToken();
@@ -251,14 +285,19 @@ export const updateProfile = mutation({
       .first();
 
     if (!session || session.expiresAt < Date.now()) {
-      throw new Error("Invalid or expired session");
+      throw new ConvexError("Invalid or expired session");
     }
 
     const user = await ctx.db.get(session.userId);
-    if (!user) throw new Error("User not found");
+    if (!user) throw new ConvexError("User not found");
 
     if (args.email !== undefined && args.email !== user.email) {
-      const emailToCheck = args.email;
+      const emailToCheck = args.email.trim().toLowerCase();
+      
+      // Validate email format
+      if (!isValidEmailFormat(emailToCheck)) {
+        throw new ConvexError("Please enter a valid email address");
+      }
     
       const existingUser = await ctx.db
         .query("users")
@@ -266,13 +305,13 @@ export const updateProfile = mutation({
         .first();
     
       if (existingUser) {
-        throw new Error("Email already in use");
+        throw new ConvexError("Email already in use");
       }
     }
     
     const updates: { name?: string; email?: string } = {};
     if (args.name !== undefined) updates.name = args.name;
-    if (args.email !== undefined) updates.email = args.email;
+    if (args.email !== undefined) updates.email = args.email.trim().toLowerCase();
 
     await ctx.db.patch(user._id, updates);
 
@@ -292,11 +331,11 @@ export const updateGlobalInstructions = mutation({
       .first();
 
     if (!session || session.expiresAt < Date.now()) {
-      throw new Error("Invalid or expired session");
+      throw new ConvexError("Invalid or expired session");
     }
 
     const user = await ctx.db.get(session.userId);
-    if (!user) throw new Error("User not found");
+    if (!user) throw new ConvexError("User not found");
 
     const updates: { aiGlobalInstructions?: string } = {};
     if (args.aiGlobalInstructions !== undefined) {
