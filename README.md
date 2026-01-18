@@ -50,8 +50,7 @@ This project was built by a non-technical product manager to:
 
 ## 🚀 Live Demo
 
-[Link to deployed app]
-
+https://writewell-two.vercel.app/
 Use code **TEST100** for free access
 
 ## 📝 Setup Instructions
@@ -61,7 +60,3 @@ See the main documentation for detailed setup instructions.
 ## 🤝 Contributing
 
 This is a learning project, but feedback and suggestions are welcome!
-
-## 📄 License
-
-MIT
