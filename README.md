@@ -1,128 +1,67 @@
-# Writewell
+# WriteWell - AI-Powered Research Writing Assistant
 
-A beautiful, AI-powered document writing application that helps you write research papers and documents by referencing your knowledge base.
+A full-stack document writing application that helps users write research papers and long-form content by integrating their knowledge base with AI assistance.
 
-## Features
+## 🎯 Project Overview
 
-- **Rich Text Editor**: Full-featured editor with formatting controls powered by TipTap
-- **Knowledge Integration**: Add research papers, notes, and references as context for AI
-- **AI Writing Assistant**: Chat-based AI that understands your document and references
-- **Real-time Sync**: Documents auto-save and sync across devices via Convex
-- **Classic Design**: Clean, serif-based aesthetic with soft shadows and warm colors
+WriteWell combines a rich text editor with AI chat capabilities, allowing users to upload research papers, notes, and references that the AI can then reference while helping them write. Built as a learning project to understand full-stack development from a product manager's perspective.
 
-## Tech Stack
+## ✨ Key Features
 
-- **Frontend**: React 18 + Vite + TypeScript
-- **Styling**: Tailwind CSS v4
-- **Rich Text**: TipTap
-- **Database & Auth**: Convex
-- **AI**: OpenAI GPT-4
+- **Rich Text Editor**: TipTap-powered editor with full formatting controls
+- **Knowledge Base Integration**: Upload and manage research papers, notes, and references
+- **Context-Aware AI Chat**: GPT-4 assistant that understands both your document and your knowledge base
+- **Real-time Auto-save**: Documents sync automatically via Convex backend
+- **User Authentication**: Secure auth with Convex authentication system
+- **Payment Integration**: Polar payment system for subscription management
+- **Clean, Academic Design**: Serif typography and warm color palette optimized for long-form writing
 
-## Getting Started
+## 🛠️ Tech Stack
 
-### Prerequisites
+**Frontend:**
+- React 18 with TypeScript
+- Vite for build tooling
+- Tailwind CSS v4 for styling
+- TipTap for rich text editing
 
-- Node.js 20.19+ or 22.12+
-- npm or yarn
-- Convex account (free at [convex.dev](https://convex.dev))
-- OpenAI API key
+**Backend:**
+- Convex (database, auth, and real-time sync)
+- OpenAI GPT-4 API for AI features
+- Polar for payment processing
 
-### Installation
+**Development:**
+- Built using Cursor AI for AI-assisted development
+- Followed tutorial-based learning approach
 
-1. Clone the repository and navigate to it:
-   ```bash
-   cd Writewell
-   ```
+## 🎓 Learning Outcomes
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+This project was built by a non-technical product manager to:
+1. Understand the full product development lifecycle from a builder's perspective
+2. Gain developer empathy and better collaborate with engineering teams
+3. Learn modern web development practices and AI integration
+4. Validate the viability of AI-assisted development for rapid prototyping
 
-3. Set up Convex:
-   ```bash
-   npx convex dev
-   ```
-   This will prompt you to log in and create a new project. Follow the instructions.
-   It will also generate the `convex/_generated` files and create a `.env.local` file with your `VITE_CONVEX_URL`.
+## 📋 Use Cases
 
-4. Add your OpenAI API key to Convex:
-   - Go to your Convex dashboard at [dashboard.convex.dev](https://dashboard.convex.dev)
-   - Select your project
-   - Navigate to Settings > Environment Variables
-   - Add `OPENAI_API_KEY` with your OpenAI API key
+- Academic researchers writing papers with multiple sources
+- Students organizing and writing research-based essays
+- Content creators managing reference materials
+- Anyone who needs AI writing assistance with context awareness
 
-5. Start the development server (in a new terminal):
-   ```bash
-   npm run dev
-   ```
+## 🚀 Live Demo
 
-6. Open [http://localhost:5173](http://localhost:5173) in your browser
+[Link to deployed app]
 
-### Development Scripts
+Use code **TEST100** for free access
 
-- `npm run dev` - Start the Vite development server
-- `npm run dev:convex` - Start Convex development server (required for backend)
-- `npm run build` - Build for production
-- `npm run preview` - Preview the production build
-- `npm run typecheck` - Run TypeScript type checking
-- `npm run lint` - Run ESLint
+## 📝 Setup Instructions
 
-## Project Structure
+See the main documentation for detailed setup instructions.
 
-```
-Writewell/
-├── convex/                 # Convex backend
-│   ├── _generated/        # Auto-generated Convex files
-│   ├── schema.ts          # Database schema
-│   ├── auth.ts            # Authentication functions
-│   ├── documents.ts       # Document CRUD operations
-│   ├── knowledge.ts       # Knowledge/references CRUD
-│   └── ai.ts              # OpenAI integration
-├── src/
-│   ├── components/
-│   │   └── editor/
-│   │       ├── RichEditor.tsx     # TipTap editor component
-│   │       ├── KnowledgePanel.tsx # Left sidebar for references
-│   │       └── AIChat.tsx         # Right sidebar AI chat
-│   ├── contexts/
-│   │   └── AuthContext.tsx        # Authentication context
-│   ├── pages/
-│   │   ├── Landing.tsx            # Landing page
-│   │   ├── Auth.tsx               # Login/Signup page
-│   │   ├── Dashboard.tsx          # Document dashboard
-│   │   └── Editor.tsx             # Document editor
-│   ├── App.tsx                    # Main app with routing
-│   ├── main.tsx                   # Entry point
-│   └── index.css                  # Global styles & Tailwind config
-├── index.html
-├── package.json
-├── vite.config.ts
-└── tsconfig.json
-```
+## 🤝 Contributing
 
-## Design System
+This is a learning project, but feedback and suggestions are welcome!
 
-### Typography
-- **Headings**: Playfair Display (serif)
-- **Body**: Lora (serif)
-- **UI Elements**: System fonts
-
-### Colors
-- **Background**: Warm cream (#FAF9F6)
-- **Primary**: Deep ink blue (#1a365d)
-- **Accent**: Warm gold (#b8860b)
-- **Text**: Charcoal (#2d3748)
-
-## How to Use
-
-1. **Sign Up / Login**: Create an account or log in to access your documents
-2. **Create a Document**: Click "New Document" from the dashboard
-3. **Add Knowledge**: Use the left sidebar to add references, notes, or research content
-4. **Write**: Use the rich text editor in the center to write your document
-5. **AI Assistance**: Chat with AI in the right sidebar - it can see your document and knowledge
-6. **Auto-save**: Your work is automatically saved as you type
-
-## License
+## 📄 License
 
 MIT
